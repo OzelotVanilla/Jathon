@@ -22,8 +22,8 @@ import java.util.Date;
  * </p>
  *
  * <p>
- * The class <code>Fecha</code> can be seen as an enhanced version of original <code>java.util.Date</code>.
- * It combines time classes in Java, and can change it into one type.
+ * The class <code>Fecha</code> can be seen as an enhanced version of original <code>java.util.Date</code>. It combines
+ * time classes in Java, and can change it into one type.
  * </p>
  *
  * @author Ozelot Vanilla
@@ -50,19 +50,19 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      */
     enum type
     {
-        point, period, now, custom
+        point, period, now
     }
 
     enum prop
     {
-        year, month, day, hour, minute, second, timezone
+        century, year, month, day, hour, minute, second, timezone
     }
 
     private type value_type;
 
     /**
      * <p>
-     * 時間帯情報を{@code Jathon.Fecha$Zone}で保存する。<br>
+     * 時間帯情報を{@code jathon.time.Timezone}で保存する。<br>
      * 既定値は使用者が使っているOSの時間帯です。
      * </p>
      *
@@ -74,8 +74,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
 
     /**
      * <p>
-     * {@code value}は{@code Fecha}の時間の素値です。{@code type}が{@code point}のときはtimestamp，
-     * {@code period}のときは経過時間です。
+     * {@code value}は{@code Fecha}の時間の素値です。{@code type}が{@code point}のときはtimestamp， {@code period}のときは経過時間です。
      * </p>
      *
      * <p>
@@ -128,9 +127,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
     public Fecha(type t, ZoneOffset zi, BigInteger value, String format)
     {
         this.value_type = t;
-        this.zone = (value_type == type.point || value_type == type.now)
-            ? new Timezone(zi)
-            : null;
+        this.zone = (value_type == type.point || value_type == type.now) ? new Timezone(zi) : null;
         this.value = t == type.now ? null : value;
         this.format = format;
     }
@@ -217,6 +214,6 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
     {
         this.value = value;
     }
-    
+
 
 }
