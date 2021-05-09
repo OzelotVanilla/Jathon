@@ -9,3 +9,9 @@ pom.xml
 .classpath
 .project
 # Ozelot Vanilla's ignore end
+
+# magicalStone's ignore
+/.idea/
+/out/
+Jathon.iml
+# magicalStone's ignore end
