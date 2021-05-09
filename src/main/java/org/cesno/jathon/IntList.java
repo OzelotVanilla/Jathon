@@ -15,18 +15,18 @@ import java.util.*;
 public class IntList implements Iterable<Integer>
 {
     public final String $version = "0.2.6.0";
-    public int[] data;
+    private int[] data;
+    private int length;
 
 
     public IntList()
     {
-        data = new int[0];
+        this(16);
     }
 
     public IntList(int length)
     {
         data = new int[length];
-        setAllTo(0);
     }
 
     public IntList(String arg)
@@ -141,7 +141,7 @@ public class IntList implements Iterable<Integer>
 
     public int[] toArray()
     {
-        return this.data;
+        return Arrays.copyOf(this.data, this.data.length);
     }
 
     public void append(int x)
