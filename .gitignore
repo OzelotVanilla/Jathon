@@ -1,0 +1,11 @@
+# Git Ignore
+#
+# Ozelot Vanilla's ignore
+/.vscode/
+/.settings/
+/src/test/
+/target/
+pom.xml
+.classpath
+.project
+# Ozelot Vanilla's ignore end
