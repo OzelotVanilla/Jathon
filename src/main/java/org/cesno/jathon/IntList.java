@@ -1,8 +1,11 @@
 package org.cesno.jathon;
 
-import static org.cesno.jathon.builtin.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-import java.util.*;
+import static org.cesno.jathon.builtin.inted;
 
 
 /**
@@ -14,7 +17,8 @@ import java.util.*;
 
 public class IntList implements Iterable<Integer>
 {
-    public final String $version = "0.2.6.0";
+
+    public final String $version = "0.2.7.0";
     private int[] data;
     private int length;
 
@@ -27,6 +31,7 @@ public class IntList implements Iterable<Integer>
     public IntList(int length)
     {
         data = new int[length];
+        this.length = length;
     }
 
     public IntList(String arg)
@@ -49,13 +54,14 @@ public class IntList implements Iterable<Integer>
     {
         this();
         this.data = inted(arg);
+        this.length = data.length;
     }
 
     public IntList(int... args)
     {
         this();
-        this.data = new int[args.length];
-        System.arraycopy(args, 0, this.data, 0, args.length);
+        this.data = Arrays.copyOf(args, args.length);
+        length = args.length;
     }
 
     public IntList(int[]... args)
@@ -67,6 +73,7 @@ public class IntList implements Iterable<Integer>
             len += l.length;
         }
         this.data = new int[len];
+        this.length = len;
         int c = 0;
         for (int[] l : args)
         {
@@ -87,11 +94,15 @@ public class IntList implements Iterable<Integer>
 
             public boolean hasNext()
             {
-                return count < data.length;
+                return count < IntList.this.length;
             }
 
             public Integer next()
             {
+                if (count == IntList.this.length)
+                {
+                    throw new ArrayIndexOutOfBoundsException("Index " + count + " Size " + IntList.this.length);
+                }
                 return data[count++];
             }
         };
@@ -100,28 +111,30 @@ public class IntList implements Iterable<Integer>
     @Override
     public String toString()
     {
-        StringBuilder s = new StringBuilder("IntList");
-        s.append(toStringPure());
-        return s.toString();
+        return "IntList" + toStringPure();
     }
 
     public String toStringPure()
     {
         StringBuilder s = new StringBuilder();
         s.append("[");
-        for (int i : data)
+        for (int j = 0; j < length; j++)
         {
-            s.append(i + ",");
+            int i = data[j];
+            s.append(i).append(",");
         }
-        s.deleteCharAt(s.length() - 1);
+        if (length > 0)
+        {
+            s.deleteCharAt(s.length() - 1);
+        }
         s.append("]");
         return s.toString();
     }
 
     public ArrayList<Integer> toArrayList()
     {
-        ArrayList<Integer> r = new ArrayList<Integer>(this.data.length);
-        for (int i = 0; i < this.data.length; i++)
+        ArrayList<Integer> r = new ArrayList<Integer>(this.length);
+        for (int i = 0; i < this.length; i++)
         {
             r.add(i, this.data[i]);
         }
@@ -131,44 +144,64 @@ public class IntList implements Iterable<Integer>
 
     public void setAllTo(int target)
     {
-        Arrays.fill(this.data, target);
+        Arrays.fill(this.data, 0, length, target);
     }
 
     public void sort()
     {
-        Arrays.sort(this.data);
+        Arrays.sort(this.data, 0, length);
     }
 
     public int[] toArray()
     {
-        return Arrays.copyOf(this.data, this.data.length);
+        return Arrays.copyOf(this.data, this.length);
     }
 
     public void append(int x)
     {
-        append(new int[]{x});
+        ensureLength(1);
+        data[length++] = x;
+    }
+
+    private void ensureLength(int lengthAppend)
+    {
+        if (data.length >= length + lengthAppend)
+        {
+            return;
+        }
+        int newLength = data.length;
+        while (newLength < length + lengthAppend)
+        {
+            newLength = Math.max(newLength << 1, 1);
+        }
+        data = Arrays.copyOf(data, newLength);
     }
 
     public void append(int[] obj)
     {
-        int[] ret = new int[this.data.length + obj.length];
-        System.arraycopy(this.data, 0, ret, 0, this.data.length);
-        for (int i = this.data.length, j = 0; i < ret.length; i++, j++)
+        append(obj, obj.length);
+    }
+
+    public void append(int[] obj, int length)
+    {
+        ensureLength(length);
+        for (int i = this.length, j = 0; j < length; i++, j++)
         {
-            ret[i] = obj[j];
+            data[i] = obj[j];
         }
-        this.data = ret;
+        this.length = this.length + length;
     }
 
     public void append(IntList obj)
     {
-        append(obj.data);
+        append(obj.data, obj.length);
     }
 
     public boolean has(int x)
     {
-        for (int i : this.data)
+        for (int j = 0; j < length; j++)
         {
+            int i = data[j];
             if (i == x)
             {
                 return true;
@@ -179,17 +212,15 @@ public class IntList implements Iterable<Integer>
 
     public int popObj(int obj)
     {
-        for (int i = 0; i < this.data.length; i++)
+        for (int i = 0; i < this.length; i++)
         {
             if (obj == this.data[i])
             {
-                int[] ret = new int[this.data.length - 1];
-                System.arraycopy(this.data, 0, ret, 0, i);
-                if (ret.length - i >= 0)
+                if (length - i > 1)
                 {
-                    System.arraycopy(this.data, i + 1, ret, i, ret.length - i);
+                    System.arraycopy(this.data, i + 1, data, i, length - i);
                 }
-                this.data = ret;
+                length--;
                 return i;
             }
         }
@@ -199,15 +230,14 @@ public class IntList implements Iterable<Integer>
     public int popIndex(int index)
     {
         int ret = this.data[index];
-        IntList newData = new IntList();
-        newData.append(Arrays.copyOfRange(this.data, 0, index));
-        newData.append(Arrays.copyOfRange(this.data, index + 1, this.data.length));
-        this.data = newData.data;
+        System.arraycopy(data, index + 1, data, index, length - index - 1);
+        length--;
         return ret;
     }
 
     public void reset()
     {
-        this.data = new int[0];
+        this.data = new int[16];
+        length = 0;
     }
 }
