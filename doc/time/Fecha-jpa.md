@@ -23,21 +23,17 @@ Fechaは，Java中でよく使われている時間と日付に関する類(Clas
 より使いやすいと機能が多い型(Type (data type))です。
 
 Fechaの日付単位の既定値はグレゴリオ暦ですか，ほかの暦法も使える。
-Fecha
+Fechaは，農歴(中国)など最も頻繁に使用される暦法を提供している，さらに，使用者が定義されたものも対応します。
 
-It works on gregorian calendar by default.
-You can also make it use any other calender you want.
-Fecha provides most often used calenders.
-If there isn't the calender you want, you can also build your calender by your own.
 
 <br />
 
 How it works
 ---------------------------------------
 
-In the daily life, people use the word "time" to describe a special point of time,
-a period of time (elapsed time), or the time for now. 
-That is where Fecha's design of game comes.
+日常生活の中で、人々は「時間」という言葉を使って，時点、期間 (経過時間)、
+または"<span title="英語では，&quot;What time is it&quot;で今の時間を尋ねる" style="color: #83ccd2">今</span>"
+を表します。そこで、`Fecha`が登場します。
 
 First, Fecha saves the type that user want. It uses an enumeration `type`,
 which contains `point`, `period`, `now`, and `custom`.
@@ -65,3 +61,7 @@ Usage: fast initialize Fecha with the time it is initialized.
 Functions 
 ---------------------------------------
 
+
+Annotation
+---------------------------------------
+[1]: 

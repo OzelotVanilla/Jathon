@@ -7,7 +7,7 @@ User's Guide of `Fecha`
 ![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/todo:%20Fecha?color=38a1db&label=todo)
 ![](https://img.shields.io/github/size/OzelotVanilla/Jathon/src/main/java/org/cesno/jathon/time/Fecha.java?color=cee4ae&logoColor=4c6473)
 
-### Document Version: v0.1.2.0
+### Document Version: v0.1.3.0
 
 ### Is your language available?
 
@@ -22,9 +22,9 @@ Brief Description
 A Java class which ensembles most needed time & data.
 
 It works on gregorian calendar by default.
-You can also make it use any other calender you want.
+You can also make it use any other calendar you want.
 Fecha provides most often used calenders.
-If there isn't the calender you want, you can also build your calender by your own.
+If there isn't the calendar you want, you can also build your calendar by your own.
 
 <br />
 
@@ -43,7 +43,9 @@ Second, Fecha will save a value of the "time" you entered in `value`.
 If you save point of time (`point`), Fecha will use timestamp to save it.
 If you want to save `period`, `value` will be the counted time.
 
-Third, as a pure class which means time, it doesn't always have a calender. Of cause, you can also attach a default calender to make it easier to use, but you should remember that calender isn't its propoty.
+Third, as a pure class which means time, it doesn't always have a calendar.
+Of course, you can also attach a default calendar to make it easier to use,
+but you should remember that calendar isn't its property.
 
 <br />
 
@@ -62,4 +64,3 @@ Usage: fast initialize Fecha with the time it is initialized.
 
 Functions 
 ---------------------------------------
-

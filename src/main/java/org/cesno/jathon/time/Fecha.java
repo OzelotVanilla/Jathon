@@ -17,7 +17,7 @@ import java.util.Date;
  * </p>
  *
  * <p>
- * {@code Fecha}型の物(Object)を作るには，構造関数{@code Fecha(Date)}や{@code Fecha(long timestamp)}を使うで十分。<br>
+ * {@code Fecha}型の物(Object)を作るには，構造関数{@code Fecha(Date)}や{@code Fecha(long timestamp)}を使うで十分。<br />
  * だだし，{@code type}が指定されない場合は{@code type=point}として見る(既定値)。
  * </p>
  *
