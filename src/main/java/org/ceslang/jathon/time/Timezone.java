@@ -2,13 +2,9 @@ package org.ceslang.jathon.time;
 
 import static org.ceslang.jathon.builtin.*;
 
-//import org.cesno.jathon.exception.ExceptionReason;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.format.TextStyle;
-import java.util.Locale;
 
 
 public class Timezone
@@ -52,7 +48,26 @@ public class Timezone
 
     public Timezone(int hrs, int min)
     {
-        this.setOffset(hrs * 3600 + min * 60);
+        if (abs(hrs) <= 18 && min >= 0 && min <= 59)
+        {
+            this.setOffset(hrs * 3600 + min * 60);
+        }
+        else
+        {
+            print("You are initializing Timezone in a wrong way.");
+            if (abs(hrs) > 18)
+            {
+                print("\tCannot use a number which abs is greater than 18 for hour.");
+                print("\t\tExpected: abs(hrs) <= 18.\tGot " + hrs);
+            }
+            if (min < 0 || min > 59)
+            {
+                print("\tCannot use a number which abs is greater than 18");
+                print("\t\tExpected: 0 <= min <= 59.\tGot " + min);
+            }
+            print("\tInit failed.\n");
+            throw new IllegalArgumentException("Arg(s) out of range");
+        }
     }
 
 
@@ -80,5 +95,10 @@ public class Timezone
     public void setOffset(int offset)
     {
         this.offset = offset;
+    }
+
+    public int getOffset()
+    {
+        return this.offset;
     }
 }

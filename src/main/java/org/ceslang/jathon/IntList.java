@@ -18,7 +18,7 @@ import static org.ceslang.jathon.builtin.inted;
 public class IntList implements Iterable<Integer>
 {
 
-    public final String $version = "0.2.7.0";
+    public final String $version = "0.3.0.0-alpha";
     private int[] data;
     private int length;
 

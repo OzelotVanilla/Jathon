@@ -1,24 +1,18 @@
 package org.ceslang.jathon;
 
-//import org.cesno.jathon.exception.ExceptionReason;
-//import org.cesno.jathon.exception.ExceptionExample;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
 /**
  * What is new?<br>
- * Completing function len() <br>
- * New function booled() <br>
- * randint() fixed, using Java's function
+ * inted(String) can parse hex, bin, and oct (start with "0o", not "0") string now<br>
+ * Now developing printc() function! Having colours in console!<br>
  */
 
 public final class builtin
 {
-    public final String $version = "0.2.7.0";
-
-    public static final String CR = System.getProperty("line.separator");
+    public final String $version = "0.3.0.0-alpha";
 
     /**
      * This is the builtin file in Jathon. Do not try to initialize instance of this class.<br>
@@ -80,6 +74,101 @@ public final class builtin
         System.out.printf(option_str + "\n", object_str);
     }
 
+    /**
+     * Set back to default fg/bg colour, it might clear your previous set colour!
+     */
+    public static void printc()
+    {
+        printx("\033[0;39;49m");
+    }
+
+    /**
+     * Use simple {@code option string} to configure the style of text.
+     * <table>
+     * <tbody>
+     *     <tr><th>Part</th><th>Meaning</th><th>Option</th></tr>
+     *     <tr><td>Colour String (6-digits)</td>
+     *     <td>The hex colour of the colour you want.</td><td>For example: 0xc0a247</td>
+     *     </tr>
+     *     <tr><td>Font Style</td><td>The style of font, like underline<br />Some of them might not be supported</td>
+     *     <td>b: bold<br />u: underline<br />i: italic<br />f: flashing</td>
+     *     </tr>
+     * </tbody>
+     * </table>
+     */
+    public static void printc(String option_str, Object... arg)
+    {
+        int hex_colour;
+
+        // Get Colour String
+        if (option_str.startsWith("0x"))
+        {
+            hex_colour = inted(option_str.substring(0, 8));
+            option_str = option_str.substring(8);
+        }
+        else
+        {
+            hex_colour = inted(option_str.substring(0, 6));
+            option_str = option_str.substring(6);
+        }
+
+        // Check if there are still options for printc
+        if (option_str.length() > 0)
+        {
+            StringBuilder option = new StringBuilder("\033[");
+            for (char c : option_str.toCharArray())
+            {
+                switch (c)
+                {
+                    case 'b' -> option.append("1;");
+                    case 'i' -> option.append("3;");
+                    case 'u' -> option.append("4;");
+                    case 'f' -> option.append("5;");
+                    default -> print("The argument you have inputted, '" + c + "' is wrong, or not supported");
+                }
+            }
+            option.deleteCharAt(option.length()).append("m");
+            printx(option.toString());
+        }
+
+        // Print with colour
+        int hex_b = hex_colour % 0x100;
+        int hex_g_b = hex_colour % 0x10000;
+        int hex_g = (hex_g_b - hex_b) / 0x100;
+        int hex_r = (hex_colour % 0x1000000 - hex_g_b) / 0x10000;
+        printc(hex_r, hex_g, hex_b, arg);
+    }
+
+    public static void printc(int hex_r, int hex_g, int hex_b, Object... arg)
+    {
+        printx("\033[0;38;2;" + hex_r + ";" + hex_g + ";" + hex_b + "m");
+        print(arg);
+        printc();
+    }
+
+    public enum TextOpt
+    {
+        bold, italic, underlined, flashing
+    }
+
+    public static void printSet(TextOpt... options)
+    {
+        // TODO Not Finished
+        StringBuilder option = new StringBuilder("\033[");
+        for (TextOpt o : options)
+        {
+            switch (o)
+            {
+                case bold -> option.append("1;");
+                case italic -> option.append("3;");
+                case underlined -> option.append("4;");
+                case flashing -> option.append("5;");
+            }
+        }
+        option.deleteCharAt(option.length()).append("m");
+        printx(option.toString());
+    }
+
 
     // len() function: If you only want to get length, then we will give you its length
 
@@ -135,7 +224,22 @@ public final class builtin
 
     public static int inted(String x)
     {
-        return Integer.parseInt(x);
+        if (x.startsWith("0x"))
+        {
+            return Integer.parseInt(x.substring(2), 16);
+        }
+        else if (x.startsWith("0b"))
+        {
+            return Integer.parseInt(x.substring(2), 2);
+        }
+        else if (x.startsWith("0o"))
+        {
+            return Integer.parseInt(x.substring(2), 8);
+        }
+        else
+        {
+            return Integer.parseInt(x);
+        }
     }
 
     public static int inted(float x)
