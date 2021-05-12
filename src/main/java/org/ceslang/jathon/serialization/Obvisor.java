@@ -1,4 +1,4 @@
-package org.cesno.jathon.serialization;
+package org.ceslang.jathon.serialization;
 
 public class Obvisor
 {

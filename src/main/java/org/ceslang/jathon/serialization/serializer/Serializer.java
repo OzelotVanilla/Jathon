@@ -1,4 +1,4 @@
-package org.cesno.jathon.serialization.serializer;
+package org.ceslang.jathon.serialization.serializer;
 
 import java.nio.ByteBuffer;
 

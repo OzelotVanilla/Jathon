@@ -1,11 +1,10 @@
-package org.cesno.jathon.serialization;
+package org.ceslang.jathon.serialization;
 
-import org.cesno.jathon.serialization.marker.Archive;
-import org.cesno.jathon.serialization.marker.Serializable;
-import org.cesno.jathon.serialization.marker.Tag;
+import org.ceslang.jathon.serialization.marker.Serializable;
+import org.ceslang.jathon.serialization.marker.Tag;
+import org.ceslang.jathon.serialization.marker.Archive;
 
 import java.util.Map;
-import java.util.TreeMap;
 
 @Tag({"ud:blockID", "ud:data"})
 @Tag({"ud:reflector"})
@@ -18,11 +17,13 @@ public class Example
 {
 
     private int dataInt;
+
     @Tag.Getter(tags = {"ud:blockID"})
     public int getDataInt()
     {
         return dataInt;
     }
+
     @Tag.Setter(tags = {"ud:blockID"})
     public void setDataInt(int dataInt)
     {

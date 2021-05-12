@@ -1,7 +1,7 @@
-package org.cesno.jathon;
+package org.ceslang.jathon;
 
-import org.cesno.jathon.exception.ExceptionReason;
-import org.cesno.jathon.exception.ExceptionExample;
+//import org.cesno.jathon.exception.ExceptionReason;
+//import org.cesno.jathon.exception.ExceptionExample;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,7 +16,7 @@ import java.util.*;
 
 public final class builtin
 {
-    public final String $version = "0.2.6.0";
+    public final String $version = "0.2.7.0";
 
     public static final String CR = System.getProperty("line.separator");
 
@@ -183,14 +183,14 @@ public final class builtin
         return x != 0.0;
     }
 
-    public static String str(long x)
+    public static String str(long number)
     {
-        return Long.toString(x);
+        return Long.toString(number);
     }
 
-    public static String str(boolean b)
+    public static String str(boolean bool)
     {
-        return b ? "true" : "false";
+        return bool ? "true" : "false";
     }
 
 
@@ -394,15 +394,15 @@ public final class builtin
     }
 
 
-    // Start Error Processing parts
+    // // Start Error Processing parts
 
-    public static void printErr(ExceptionReason r)
-    {
-        // TODO need param (ErrorReason r)
-    }
+    // public static void printErr(ExceptionReason r)
+    // {
+    // // TODO need param (ErrorReason r)
+    // }
 
-    public static void printErrDetail()
-    {
-        // TODO need param (ErrorReason r, ErrorExample t)
-    }
+    // public static void printErrDetail()
+    // {
+    // // TODO need param (ErrorReason r, ErrorExample t)
+    // }
 }

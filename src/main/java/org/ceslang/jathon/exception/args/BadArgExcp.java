@@ -1,4 +1,4 @@
-package org.cesno.jathon.exception.args;
+package org.ceslang.jathon.exception.args;
 
 public abstract class BadArgExcp extends Throwable
 {

@@ -1,4 +1,4 @@
-package org.cesno.jathon.serialization.marker;
+package org.ceslang.jathon.serialization.marker;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

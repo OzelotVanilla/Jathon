@@ -1,6 +1,4 @@
-package org.cesno.jathon.exception.args;
-
-import org.cesno.jathon.exception.ExceptionReason;
+package org.ceslang.jathon.exception.args;
 
 public class OutOfRangeExcp extends BadArgExcp
 {

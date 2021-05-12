@@ -1,4 +1,4 @@
-package org.cesno.jathon.exception;
+package org.ceslang.jathon.exception;
 
 public class ExceptionReason
 {

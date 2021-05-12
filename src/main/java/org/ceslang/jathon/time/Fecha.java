@@ -1,6 +1,6 @@
-package org.cesno.jathon.time;
+package org.ceslang.jathon.time;
 
-import static org.cesno.jathon.builtin.*;
+import static org.ceslang.jathon.builtin.*;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
+// import java.sql.Date;
 
 /**
  * <p>
@@ -105,6 +106,11 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
     public Fecha(Date date)
     {
         // TODO Empty constructor to be filled
+        this(type.point, date.getTime());
+    }
+
+    public Fecha(java.sql.Date date)
+    {
         this(type.point, date.getTime());
     }
 
