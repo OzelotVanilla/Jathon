@@ -6,13 +6,12 @@ Jathon - Try to Make things Clearer and Easier
 What is Jathon
 --------------
 
-Jathon is a library which contains some Java classes to help Java developers
-write programs with clearer and easier grammar.
+Jathon is a library which contains some Java classes to help Java developers write programs with clearer and easier
+grammar.
 
-Jathon has many functions that compress original Java functions in one place.
-For example, you can use `print()` or `len()` to print or calculate the data length.
-You only need to think about your steps,
-we can help you with the part like this <!-- Some example of Jathon needed -->.
+Jathon has many functions that compress original Java functions in one place. For example, you can use `print()`
+or `len()` to print or calculate the data length. You only need to think about your steps, we can help you with the part
+like this <!-- Some example of Jathon needed -->.
 
 <br />
 
@@ -29,8 +28,9 @@ What does Jathon have
 
 ![](https://img.shields.io/badge/status-able_to_be_used-fcc800?logoColor=4c6473)
 ![](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/bug:%20builtin?color=f09199&label=bug)
-![GitHub issues by-label](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/warning:%20builtin?color=F08300&label=warn)
-![GitHub file size in bytes](https://img.shields.io/github/size/OzelotVanilla/aTool/Jathon/src/org/cesno/jathon/builtin.java?color=CEE4AE&logoColor=4c6473)
+![](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/warning:%20builtin?color=F08300&label=warn)
+![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/todo:%20builtin?color=38a1db&label=todo)
+![](https://img.shields.io/github/size/OzelotVanilla/Jathon/src/main/java/org/ceslang/jathon/builtin.java?color=CEE4AE&logoColor=4c6473)
 
 What is this: Idea got from Python. Make your code pretty.
 
@@ -38,10 +38,8 @@ How we make: Use functions to make long or multiple statements shorter and clear
 
 How to use:
 
-Note: `builtin` is **not** a class that can be initialized.
-To follow the original name in Python,
-and **avoid people to use it to create instance**,
-this class's name is "`builtin`", but not "*BuiltIn*" or "*Builtin*".
+Note: `builtin` is **not** a class that can be initialized. To follow the original name in Python, and **avoid people to
+use it to create instance**, this class's name is "`builtin`", but not "*BuiltIn*" or "*Builtin*".
 
 <br />
 
@@ -49,11 +47,12 @@ this class's name is "`builtin`", but not "*BuiltIn*" or "*Builtin*".
 
 ![](https://img.shields.io/badge/status-under_development-eebbcb?logoColor=4c6473)
 ![](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/bug:%20Fecha?color=f09199&label=bug)
-![GitHub issues by-label](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/warning:%20Fecha?color=F08300&label=warn)
-![GitHub file size in bytes](https://img.shields.io/github/size/OzelotVanilla/aTool/Jathon/src/org/cesno/jathon/time/Fecha.java?color=CEE4AE&logoColor=4c6473)
+![](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/warning:%20Fecha?color=F08300&label=warn)
+![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/todo:%20Fecha?color=38a1db&label=todo)
+![](https://img.shields.io/github/size/OzelotVanilla/Jathon/src/main/java/org/ceslang/jathon/time/Fecha.java?color=CEE4AE&logoColor=4c6473)
 
-What is this: Can save time point or period, can be formatted easier.
-You can transfer the object about classes into this
+What is this: Can save time point or period, can be formatted easier. You can transfer the object about classes into
+this
 
 
 
@@ -61,11 +60,11 @@ You can transfer the object about classes into this
 
 ### IntList (`jathon`)
 
-![](https://img.shields.io/badge/status-maybe_deprecated-d91e10?logoColor=4c6473)
-![GitHub file size in bytes](https://img.shields.io/github/size/OzelotVanilla/aTool/Jathon/src/org/cesno/jathon/IntList.java?color=CEE4AE&logoColor=4c6473)
+![](https://img.shields.io/badge/status-may_change_structure-d91e10?logoColor=4c6473)
+![](https://img.shields.io/github/size/OzelotVanilla/Jathon/src/main/java/org/ceslang/jathon/IntList.java?color=CEE4AE&logoColor=4c6473)
 
-If you want to have a list like thing saving int in Java, try this 
-  (Considering, a bit like repeat work (Java already has ArrayList\<Integer\>))
+If you want to have a list like thing saving int in Java, try this
+(Considering, a bit like repeat work (Java already has ArrayList\<Integer\>))
 
 <br />
 
@@ -90,14 +89,15 @@ For example (in Java):
     final String $VERSION  =  "1.0.0.0";
     final int    $short_e  =  2.718;
 
-    class Cell
+class Cell
+{
+    int test_var = 0;
+
+    public boolean isTestClass()
     {
-        int test_var = 0;
-        public boolean isTestClass()
-        {
-            return true;
-        }
+        return true;
     }
+}
 ```
 
 What is other files in this folder
@@ -107,5 +107,4 @@ Version Guide:
 You can see the discription of the difference versions.
 
 updater:
-Save it in the folder which contains these three modules,
-and fetch latest version **in repo** (**not releases**).
+Save it in the folder which contains these three modules, and fetch latest version **in repo** (**not releases**).

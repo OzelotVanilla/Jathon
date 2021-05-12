@@ -139,6 +139,12 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
     }
 
 
+//    @Override
+//    public String toString()
+//    {
+//        // TODO Write it after you have designed format
+//    }
+
     @Override
     public int compareTo(Fecha o)
     {
