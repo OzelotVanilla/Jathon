@@ -22,6 +22,8 @@ like this <!-- Some example of Jathon needed -->.
 What does Jathon have
 ---------------------
 
+Please go to `/src/main/java/org/ceslang/jathon/` to find file.
+
 <br />
 
 ### builtin (`jathon`)
@@ -36,10 +38,11 @@ What is this: Idea got from Python. Make your code pretty.
 
 How we make: Use functions to make long or multiple statements shorter and clearer.
 
-How to use:
+How to use: import it in the head of file `import static org.ceslang.jathon.builtin.*`.
 
-Note: `builtin` is **not** a class that can be initialized. To follow the original name in Python, and **avoid people to
-use it to create instance**, this class's name is "`builtin`", but not "*BuiltIn*" or "*Builtin*".
+Note: `builtin` is **not** a class that can be initialized.
+To follow the original name in Python, and **avoid people to use it to create instance**,
+this class's name is "`builtin`", but not "*BuiltIn*" or "*Builtin*".
 
 <br />
 
@@ -51,8 +54,8 @@ use it to create instance**, this class's name is "`builtin`", but not "*BuiltIn
 ![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/todo:%20Fecha?color=38a1db&label=todo)
 ![](https://img.shields.io/github/size/OzelotVanilla/Jathon/src/main/java/org/ceslang/jathon/time/Fecha.java?color=CEE4AE&logoColor=4c6473)
 
-What is this: Can save time point or period, can be formatted easier. You can transfer the object about classes into
-this
+What is this: Can save time point or period, can be formatted easier.
+You can transfer the object about classes into this.
 
 
 
@@ -86,8 +89,8 @@ Jathon Suggest You
 For example (in Java):
 
 ```java
-    final String $VERSION  =  "1.0.0.0";
-    final int    $short_e  =  2.718;
+final String $VERSION  =  "1.0.0.0";
+final int    $short_e  =  2.718;
 
 class Cell
 {
@@ -107,4 +110,5 @@ Version Guide:
 You can see the discription of the difference versions.
 
 updater:
-Save it in the folder which contains these three modules, and fetch latest version **in repo** (**not releases**).
+Save it in the folder which contains these three modules, and fetch the latest version **in repo** (**not
+releases**) (**Missing in this repo**).

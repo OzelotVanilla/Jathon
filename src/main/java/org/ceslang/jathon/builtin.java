@@ -1,18 +1,23 @@
 package org.ceslang.jathon;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.*;
 import java.util.*;
 
 /**
- * What is new?<br>
- * inted(String) can parse hex, bin, and oct (start with "0o", not "0") string now<br>
- * Now developing printc() function! Having colours in console!<br>
+ * What is new? <br>
+ * inted(String) can parse hex, bin, and oct (start with "0o", not "0") string now <br>
+ * Now developing printc() function! Having colours in console! <br>
+ * readParam() function family <br>
+ * booled() now support string <br>
+ * Making open() family
  */
 
 public final class builtin
 {
-    public final String $version = "0.3.0.0-alpha";
+    public final String $version = "0.3.1.0";
 
     /**
      * This is the builtin file in Jathon. Do not try to initialize instance of this class.<br>
@@ -86,19 +91,32 @@ public final class builtin
      * Use simple {@code option string} to configure the style of text.
      * <table>
      * <tbody>
-     *     <tr><th>Part</th><th>Meaning</th><th>Option</th></tr>
-     *     <tr><td>Colour String (6-digits)</td>
-     *     <td>The hex colour of the colour you want.</td><td>For example: 0xc0a247</td>
-     *     </tr>
-     *     <tr><td>Font Style</td><td>The style of font, like underline<br />Some of them might not be supported</td>
-     *     <td>b: bold<br />u: underline<br />i: italic<br />f: flashing</td>
-     *     </tr>
+     * <tr>
+     * <th>Part</th>
+     * <th>Meaning</th>
+     * <th>Option</th>
+     * </tr>
+     * <tr>
+     * <td>Colour String (6-digits)</td>
+     * <td>The hex colour of the colour you want.</td>
+     * <td>For example: 0xc0a247</td>
+     * </tr>
+     * <tr>
+     * <td>Font Style</td>
+     * <td>The style of font, like underline<br />
+     * Some of them might not be supported</td>
+     * <td>b: bold<br />
+     * u: underline<br />
+     * i: italic<br />
+     * f: flashing</td>
+     * </tr>
      * </tbody>
      * </table>
      */
-    public static void printc(String option_str, Object... arg)
+    public static void printcx(String option_str, Object... arg)
     {
         int hex_colour;
+        StringBuilder option = new StringBuilder("\033[");
 
         // Get Colour String
         if (option_str.startsWith("0x"))
@@ -108,14 +126,20 @@ public final class builtin
         }
         else
         {
-            hex_colour = inted(option_str.substring(0, 6));
+            hex_colour = inted("0x" + option_str.substring(0, 6));
             option_str = option_str.substring(6);
         }
+
+        // Print with colour
+        int hex_b = hex_colour % 0x100;
+        int hex_g_b = hex_colour % 0x10000;
+        int hex_g = (hex_g_b - hex_b) / 0x100;
+        int hex_r = (hex_colour % 0x1000000 - hex_g_b) / 0x10000;
+        option.append("0;38;2;" + hex_r + ";" + hex_g + ";" + hex_b + ";");
 
         // Check if there are still options for printc
         if (option_str.length() > 0)
         {
-            StringBuilder option = new StringBuilder("\033[");
             for (char c : option_str.toCharArray())
             {
                 switch (c)
@@ -127,22 +151,26 @@ public final class builtin
                     default -> print("The argument you have inputted, '" + c + "' is wrong, or not supported");
                 }
             }
-            option.deleteCharAt(option.length()).append("m");
             printx(option.toString());
         }
 
-        // Print with colour
-        int hex_b = hex_colour % 0x100;
-        int hex_g_b = hex_colour % 0x10000;
-        int hex_g = (hex_g_b - hex_b) / 0x100;
-        int hex_r = (hex_colour % 0x1000000 - hex_g_b) / 0x10000;
-        printc(hex_r, hex_g, hex_b, arg);
+        option.deleteCharAt(option.length() - 1).append("m");
+        printx(option.toString());
+        printx(arg);
+        printc();
     }
+
+    public static void printc(String option_str, Object... arg)
+    {
+        printcx(option_str, arg);
+        print();
+    }
+
 
     public static void printc(int hex_r, int hex_g, int hex_b, Object... arg)
     {
-        printx("\033[0;38;2;" + hex_r + ";" + hex_g + ";" + hex_b + "m");
-        print(arg);
+        printSet(hex_r, hex_g, hex_b);
+        printx(arg);
         printc();
     }
 
@@ -151,9 +179,25 @@ public final class builtin
         bold, italic, underlined, flashing
     }
 
-    public static void printSet(TextOpt... options)
+    public static void printSet(int hex_colour)
+    {
+        int hex_b = hex_colour % 0x100;
+        int hex_g_b = hex_colour % 0x10000;
+        int hex_g = (hex_g_b - hex_b) / 0x100;
+        int hex_r = (hex_colour % 0x1000000 - hex_g_b) / 0x10000;
+        printSet(hex_r, hex_g, hex_b);
+    }
+
+    public static void printSet(int r, int g, int b)
+    {
+        printx("\033[0;38;2;" + r + ";" + g + ";" + b + "m");
+
+    }
+
+    public static void printSet(int hex_colour, TextOpt... options)
     {
         // TODO Not Finished
+        printSet(hex_colour);
         StringBuilder option = new StringBuilder("\033[");
         for (TextOpt o : options)
         {
@@ -182,6 +226,11 @@ public final class builtin
         return inted(StrictMath.log10(i));
     }
 
+    public static int len(int[] arr)
+    {
+        return arr.length;
+    }
+
     public static <U> int len(U[] a)
     {
         return a.length;
@@ -208,6 +257,79 @@ public final class builtin
         }
     }
 
+    public static void exit()
+    {
+        System.exit(0);
+    }
+
+    public static void exit(int status)
+    {
+        System.exit(status);
+    }
+
+    public static String[] readOptionParam(String[] args)
+    {
+        ArrayList<String> ret_args = new ArrayList<>();
+        for (String s : args)
+        {
+            // If it is "-o" or "--option"
+            if (s.startsWith("-"))
+            {
+                ret_args.add(s);
+            }
+        }
+        return ret_args.toArray(new String[0]);
+    }
+
+    public static String[] readObjectParams(String[] args)
+    {
+
+        ArrayList<String> ret_args = new ArrayList<>();
+        for (String s : args)
+        {
+            if (!s.startsWith("-"))
+            {
+                ret_args.add(s);
+            }
+        }
+        return ret_args.toArray(new String[0]);
+    }
+
+    // TODO Alternative for Option Param (like "-h", "-?", and "--help" is the same)
+    // public static String[] readObjectParam(String[] args, int number_to_read, String... after)
+    // {
+
+    // }
+
+    // TODO Strict ream param: only the obj param next to option param is accepted
+    // Like this: --strict-mode I_can_be_read --separate I_cannot_be_read
+
+    public static String[] readObjectParam(String[] args, String after, int number_to_read)
+    {
+        ArrayList<String> ret_args = new ArrayList<>();
+        {
+            boolean can_read = false;
+            for (int i = 0; i < args.length && number_to_read > 0; i++)
+            {
+                // Get can_read status
+                // If after is null, then read from the first one
+                if (args[i].equals(after) || after == null)
+                {
+                    can_read = true;
+                    continue;
+                }
+
+                // If can read
+                if (can_read)
+                {
+                    ret_args.add(args[i]);
+                    number_to_read -= 1;
+                }
+            }
+        }
+        return ret_args.toArray(new String[0]);
+    }
+
 
     public static String deciFmt(double d)
     {
@@ -226,19 +348,19 @@ public final class builtin
     {
         if (x.startsWith("0x"))
         {
-            return Integer.parseInt(x.substring(2), 16);
+            return Integer.parseInt(x.strip().substring(2), 16);
         }
         else if (x.startsWith("0b"))
         {
-            return Integer.parseInt(x.substring(2), 2);
+            return Integer.parseInt(x.strip().substring(2), 2);
         }
         else if (x.startsWith("0o"))
         {
-            return Integer.parseInt(x.substring(2), 8);
+            return Integer.parseInt(x.strip().substring(2), 8);
         }
         else
         {
-            return Integer.parseInt(x);
+            return Integer.parseInt(x.strip());
         }
     }
 
@@ -260,6 +382,11 @@ public final class builtin
             ret[i] = inted(arg[i]);
         }
         return ret;
+    }
+
+    public static double doubled(int x)
+    {
+        return (double) x;
     }
 
     public static double[] doubled(String[] arg)
@@ -287,6 +414,22 @@ public final class builtin
         return x != 0.0;
     }
 
+    public static boolean booled(String x)
+    {
+        if (x.toLowerCase().equals("true"))
+        {
+            return true;
+        }
+        if (x.toLowerCase().equals("false"))
+        {
+            return false;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Invalid string to change to boolean type");
+        }
+    }
+
     public static String str(long number)
     {
         return Long.toString(number);
@@ -305,9 +448,9 @@ public final class builtin
         return scanner_s.nextLine();
     }
 
-    public static String input(String x)
+    public static String input(String prompt)
     {
-        printx(x);
+        printx(prompt);
         return input();
     }
 
@@ -316,9 +459,9 @@ public final class builtin
         return scanner_s.nextInt();
     }
 
-    public static int inputOneInt(String x)
+    public static int inputOneInt(String prompt)
     {
-        printx(x);
+        printx(prompt);
         return inputOneInt();
     }
 
@@ -376,7 +519,7 @@ public final class builtin
 
     // Math function.
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     /**
      * Use system time to return a random number.<br>
@@ -496,6 +639,40 @@ public final class builtin
     {
         return "0o" + Integer.toOctalString(x);
     }
+
+
+    // Start File Processing parts
+
+    public static Scanner openURL(String url)
+    {
+        try
+        {
+            URL url_obj = new URL(url);
+            return new Scanner(url_obj.openStream());
+        }
+        catch (MalformedURLException e)
+        {
+            printc("e60033b", "[!ERR] You have provided a wrong URL");
+            printc("e60033b", "\tNo such URL: " + url);
+            e.printStackTrace();
+        }
+        catch (ConnectException e)
+        {
+            printc("e60033b", "[!ERR] Failed to connect.");
+            printc("e60033b", "\tTarget URL: " + url);
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            printc("e60033b", "[!ERR] You have encountered an IO Exception");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    // End File Processing parts
 
 
     // // Start Error Processing parts
