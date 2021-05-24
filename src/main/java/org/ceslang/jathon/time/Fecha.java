@@ -10,13 +10,14 @@ import java.math.BigInteger;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.Formatter;
 
 import static org.ceslang.jathon.builtin.str;
 // import java.sql.Date;
 
 /**
  * <p>
- * {@code lib.Jathon.Fecha} ({@code Fecha}) は，Javaの従来の時間と関連する類(Class)と型(Type)を統合し，より使いやすいと機能が多い型です。
+ * {@code org.ceslang.jathon.time.Fecha} ({@code Fecha}) は，Javaの従来の時間と関連する類(Class)と型(Type)を統合し，より使いやすいと機能が多い型です。
  * </p>
  *
  * <p>
@@ -208,18 +209,18 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         this.value = value;
     }
 
-    public BigInteger[] express(TimeUnit[] format)
+    public BigInteger[] express(TimeUnit... format)
     {
         BigInteger remaining;
         BigInteger[] expression = new BigInteger[format.length];
         BigInteger[] partExpression;
         TimeUnit[] structure;
-        switch (value_type)
+        switch (this.value_type)
         {
             case now:
-                remaining = BigInteger.valueOf(System.currentTimeMillis());
-                partExpression = null;
-                structure = null;
+                partExpression = calendarSystem.expressFecha(BigInteger.valueOf(System.currentTimeMillis()), zone);
+                remaining = partExpression[0];
+                structure = calendarSystem.getSupportedTimeUnit();
                 break;
             case period:
                 remaining = value;
@@ -227,38 +228,72 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
                 structure = null;
                 break;
             case point:
-                partExpression = calendarSystem.expressFecha(value, null);//Where is your timezone???
+                partExpression = calendarSystem.expressFecha(value, zone);
                 remaining = partExpression[0];
                 structure = calendarSystem.getSupportedTimeUnit();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + value_type);
         }
-        for (int j = 0; j < format.length; j++)
+        for (int i = 0; i < format.length; i++)
         {
-            int i = 0;
+            int j = 0;
             if (partExpression != null)
             {
-                for (int length = partExpression.length - 1; i < length; i++)
+                for (int length = partExpression.length - 1; j < length; j++)
                 {
-                    TimeUnit oneBit = structure[i];
-                    if (format[j] == oneBit)
+                    TimeUnit oneBit = structure[j];
+                    if (format[i] == oneBit)
                     {
                         break;
                     }
                 }
             }
-            if (i != 0)
+            if (j != 0)
             {
-                expression[j] = partExpression[i + 1];
+                expression[i] = partExpression[j + 1];
             } else
             {
-                BigInteger[] divideAndRemainder = remaining.divideAndRemainder(((ConstantTimeUnit) format[j]).getLength());
-                expression[j] = divideAndRemainder[0];
+                BigInteger[] divideAndRemainder = remaining.divideAndRemainder(((ConstantTimeUnit) format[i]).getLength());
+                expression[i] = divideAndRemainder[0];
                 remaining = divideAndRemainder[1];
             }
         }
         return expression;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Fecha{" + "value_type=" + value_type + ", zone=" + zone + ", value=" + value + '}';
+    }
+
+    public String toString(String format, Object... args)
+    {
+        Formatter formatter = new Formatter();
+        Object[] shifted = new Object[args.length];
+        TimeUnit[] units = new TimeUnit[args.length];
+        int[] difference = new int[args.length];
+        for (int i = 0, j = 0; i < args.length; i++)
+        {
+            Object bit = args[i];
+            if (bit instanceof TimeUnit)
+            {
+                difference[j] = i;
+                units[j] = (TimeUnit) bit;
+                j++;
+            } else
+            {
+                shifted[i] = bit;
+            }
+        }
+        BigInteger[] expression = express(units);
+        for (int i = 0; difference[i] != 0; i++)
+        {
+            shifted[difference[i]] = expression[i];
+        }
+        formatter.format(format, shifted);
+        return formatter.toString();
     }
 
     /**
@@ -266,7 +301,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      * {@code type}は{@code Fecha}内部の{@code value}の解釈型(与元型ではない)です。Fechaは
      * </p>
      * <p>
-     * Save the meaning of Fecha's value. It can be a special point of time, or a period of time. If you assign it as
+     * Save the meaning of the value of Fecha. It can be a special point of time, or a period of time. If you assign it as
      * {@code now}, it will only mark it is present time, and not saving time in {@code value}.
      * </p>
      */

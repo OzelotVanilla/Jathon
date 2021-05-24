@@ -18,17 +18,17 @@ public abstract class CalendarSystem
     public static class TemplateCalenderSystem extends CalendarSystem
     {
 
-        private final TimeUnit[] supportedTimeUnits;
+        private final TimeUnit[] supported_time_units;
 
-        public TemplateCalenderSystem(TimeUnit... supportedTimeUnits)
+        public TemplateCalenderSystem(TimeUnit... supported_time_units)
         {
-            this.supportedTimeUnits = supportedTimeUnits;
+            this.supported_time_units = supported_time_units;
         }
 
         @Override
         public TimeUnit[] getSupportedTimeUnit()
         {
-            return supportedTimeUnits;
+            return supported_time_units;
         }
 
         @Override
