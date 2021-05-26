@@ -15,6 +15,7 @@ import java.util.*;
  * Making open() family
  */
 
+@SuppressWarnings("unused")
 public final class builtin
 {
     public final String $version = "0.3.1.0";
@@ -135,7 +136,7 @@ public final class builtin
         int hex_g_b = hex_colour % 0x10000;
         int hex_g = (hex_g_b - hex_b) / 0x100;
         int hex_r = (hex_colour % 0x1000000 - hex_g_b) / 0x10000;
-        option.append("0;38;2;" + hex_r + ";" + hex_g + ";" + hex_b + ";");
+        option.append("0;38;2;").append(hex_r).append(";").append(hex_g).append(";").append(hex_b).append(";");
 
         // Check if there are still options for printc
         if (option_str.length() > 0)
@@ -216,6 +217,14 @@ public final class builtin
 
     // len() function: If you only want to get length, then we will give you its length
 
+    /**
+     * Return the length of the object you have inputted. Currently return string's length.
+     * <p>
+     * Note: because string is commonly used, it appears in the first
+     *
+     * @param s The string you want to get its length
+     * @return Length of string
+     */
     public static int len(String s)
     {
         return s.length();
@@ -239,6 +248,11 @@ public final class builtin
     public static <U> int len(Collection<U> c)
     {
         return c.size();
+    }
+
+    public static int len(CharSequence cs)
+    {
+        return cs.length();
     }
 
 
@@ -386,7 +400,7 @@ public final class builtin
 
     public static double doubled(int x)
     {
-        return (double) x;
+        return x;
     }
 
     public static double[] doubled(String[] arg)
@@ -416,11 +430,11 @@ public final class builtin
 
     public static boolean booled(String x)
     {
-        if (x.toLowerCase().equals("true"))
+        if (x.equalsIgnoreCase("true"))
         {
             return true;
         }
-        if (x.toLowerCase().equals("false"))
+        if (x.equalsIgnoreCase("false"))
         {
             return false;
         }

@@ -1,4 +1,4 @@
-package org.ceslang.jathon.time.calender;
+package org.ceslang.jathon.time.calendar;
 
 import org.ceslang.jathon.time.TimeUnit;
 import org.ceslang.jathon.time.Timezone;
@@ -18,23 +18,23 @@ public abstract class CalendarSystem
     public static class TemplateCalenderSystem extends CalendarSystem
     {
 
-        private final TimeUnit[] supported_time_units;
+        private final TimeUnit[] supportedTimeUnits;
 
-        public TemplateCalenderSystem(TimeUnit... supported_time_units)
+        public TemplateCalenderSystem(TimeUnit... supportedTimeUnits)
         {
-            this.supported_time_units = supported_time_units;
+            this.supportedTimeUnits = supportedTimeUnits;
         }
 
         @Override
         public TimeUnit[] getSupportedTimeUnit()
         {
-            return supported_time_units;
+            return supportedTimeUnits;
         }
 
         @Override
         public BigInteger[] expressFecha(BigInteger timeStamp, Timezone timezone)
         {
-            //TODO
+            // TODO
             return new BigInteger[0];
         }
     }

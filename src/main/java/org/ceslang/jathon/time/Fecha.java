@@ -1,18 +1,16 @@
 package org.ceslang.jathon.time;
 
-import org.ceslang.jathon.time.calender.CalendarSystem;
+import static org.ceslang.jathon.builtin.*;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.math.BigInteger;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import org.ceslang.jathon.time.calendar.CalendarSystem;
+
+import java.io.*;
+import java.math.*;
+import java.time.*;
 import java.util.Date;
 import java.util.Formatter;
 
-import static org.ceslang.jathon.builtin.str;
+
 // import java.sql.Date;
 
 /**
@@ -42,8 +40,11 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      * </p>
      */
     public final String $version = "0.2.6.0";
+
     public final String $default_format = "`MM`-`DD`-`YYYY` `hh24`:`mm`:`ss`";
+
     private type value_type;
+
     /**
      * <p>
      * 時間帯情報を{@code jathon.time.Timezone}で保存する。<br>
@@ -55,6 +56,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      * </p>
      */
     private Timezone zone;
+
     /**
      * <p>
      * {@code value}は{@code Fecha}の時間の素値です。{@code type}が{@code point}のときはtimestamp， {@code period}のときは経過時間です。
@@ -65,6 +67,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      * </p>
      */
     private BigInteger value;
+
     /**
      * <p>
      * {@code format}は{@code Fecha}の表現形式を制御します。<br>
@@ -75,7 +78,9 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      * @see #setFormat(String)
      */
     private String format;
+
     private CalendarSystem calendarSystem;
+
 
     public Fecha()
     {
@@ -87,7 +92,6 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         // TODO Empty constructor to be filled
         this(type.point, date.getTime());
     }
-
 
     public Fecha(java.sql.Date date)
     {
@@ -118,6 +122,13 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         this.format = format;
     }
 
+
+    // @Override
+    // public String toString()
+    // {
+    // // TODO Write it after you have designed format
+    // }
+
     @Override
     public int compareTo(Fecha o)
     {
@@ -132,19 +143,13 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
 
     }
 
-
-    //    @Override
-    //    public String toString()
-    //    {
-    //        // TODO Write it after you have designed format
-    //    }
-
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
     {
         // TODO Auto-generated method stub
 
     }
+
 
     /**
      * <p>
@@ -172,7 +177,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      * </p>
      * Save the format of formatted output. By default, it is {@code "`MM`-`DD`-`YYYY` `hh24`:`mm`:`ss`"}
      *
-     * @param fmt 置き換えたい新しい
+     * @param fmt 置き換えたい新しい格式提供子
      */
     public void setFormat(String fmt)
     {
@@ -217,22 +222,22 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         TimeUnit[] structure;
         switch (this.value_type)
         {
-            case now:
+            case now :
                 partExpression = calendarSystem.expressFecha(BigInteger.valueOf(System.currentTimeMillis()), zone);
                 remaining = partExpression[0];
                 structure = calendarSystem.getSupportedTimeUnit();
                 break;
-            case period:
+            case period :
                 remaining = value;
                 partExpression = null;
                 structure = null;
                 break;
-            case point:
+            case point :
                 partExpression = calendarSystem.expressFecha(value, zone);
                 remaining = partExpression[0];
                 structure = calendarSystem.getSupportedTimeUnit();
                 break;
-            default:
+            default :
                 throw new IllegalStateException("Unexpected value: " + value_type);
         }
         for (int i = 0; i < format.length; i++)
@@ -252,9 +257,11 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
             if (j != 0)
             {
                 expression[i] = partExpression[j + 1];
-            } else
+            }
+            else
             {
-                BigInteger[] divideAndRemainder = remaining.divideAndRemainder(((ConstantTimeUnit) format[i]).getLength());
+                BigInteger[] divideAndRemainder = remaining
+                        .divideAndRemainder(((ConstantTimeUnit) format[i]).getLength());
                 expression[i] = divideAndRemainder[0];
                 remaining = divideAndRemainder[1];
             }
@@ -282,7 +289,8 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
                 difference[j] = i;
                 units[j] = (TimeUnit) bit;
                 j++;
-            } else
+            }
+            else
             {
                 shifted[i] = bit;
             }
@@ -301,8 +309,8 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      * {@code type}は{@code Fecha}内部の{@code value}の解釈型(与元型ではない)です。Fechaは
      * </p>
      * <p>
-     * Save the meaning of the value of Fecha. It can be a special point of time, or a period of time. If you assign it as
-     * {@code now}, it will only mark it is present time, and not saving time in {@code value}.
+     * Save the meaning of the value of Fecha. It can be a special point of time, or a period of time. If you assign it
+     * as {@code now}, it will only mark it is present time, and not saving time in {@code value}.
      * </p>
      */
     enum type

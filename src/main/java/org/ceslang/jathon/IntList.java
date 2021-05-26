@@ -1,11 +1,11 @@
 package org.ceslang.jathon;
 
+import static org.ceslang.jathon.builtin.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import static org.ceslang.jathon.builtin.inted;
 
 
 /**
@@ -30,7 +30,7 @@ public class IntList implements Iterable<Integer>
 
     public IntList(int length)
     {
-        data = new int[length];
+        this.data = new int[length];
         this.length = length;
     }
 
@@ -54,7 +54,7 @@ public class IntList implements Iterable<Integer>
     {
         this();
         this.data = inted(arg);
-        this.length = data.length;
+        this.length = this.data.length;
     }
 
     public IntList(int... args)
@@ -167,16 +167,16 @@ public class IntList implements Iterable<Integer>
 
     private void ensureLength(int lengthAppend)
     {
-        if (data.length >= length + lengthAppend)
+        if (len(data) >= length + lengthAppend)
         {
             return;
         }
-        int newLength = data.length;
+        int newLength = len(data);
         while (newLength < length + lengthAppend)
         {
             newLength = Math.max(newLength << 1, 1);
         }
-        data = Arrays.copyOf(data, newLength);
+        this.data = Arrays.copyOf(this.data, newLength);
     }
 
     public void append(int[] obj)
