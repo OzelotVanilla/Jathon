@@ -6,6 +6,7 @@ import org.ceslang.jathon.time.calendar.CalendarSystem;
 
 import java.io.*;
 import java.math.*;
+import java.sql.Time;
 import java.time.*;
 import java.util.Date;
 import java.util.Formatter;
@@ -41,7 +42,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      */
     public final String $version = "0.2.6.0";
 
-    public final String $default_format = "`MM`-`DD`-`YYYY` `hh24`:`mm`:`ss`";
+    public static final String $default_format = "`default`";
 
     private type value_type;
 
@@ -84,12 +85,11 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
 
     public Fecha()
     {
-        // TODO Empty constructor to be filled
+        this(type.point, System.currentTimeMillis(), new Timezone(), $default_format);
     }
 
     public Fecha(Date date)
     {
-        // TODO Empty constructor to be filled
         this(type.point, date.getTime());
     }
 
@@ -98,27 +98,62 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         this(type.point, date.getTime());
     }
 
+    public Fecha(LocalDate ld)
+    {
+        this(type.point, Instant.from(ld).toEpochMilli());
+    }
+
+    public Fecha(LocalDateTime ldt)
+    {
+        this(type.point, Instant.from(ldt).toEpochMilli());
+    }
+
     public Fecha(long timestamp)
     {
-        // TODO Empty constructor to be filled
         this(type.point, timestamp);
+    }
+
+    /**
+     * If there is only type specified, {@code point} will use current time as value, {@code period} use 0, {@code now} use null.
+     */
+    public Fecha(type t)
+    {
+        this(t, t == type.now ? null : (t == type.period ? BigInteger.ZERO : new BigInteger(str(System.currentTimeMillis()))));
     }
 
     public Fecha(type t, long value)
     {
-        // TODO Empty constructor to be filled
+        this(t, new BigInteger(str(value)));
+    }
+
+    public Fecha(type t, BigInteger value)
+    {
+        this(t, value, t == type.period ? null : new Timezone(), $default_format);
     }
 
     public Fecha(ZoneId zi, long value)
     {
-        // TODO Empty constructor to be filled
+        this(zi, new BigInteger(str(value)));
     }
 
-    public Fecha(type t, ZoneOffset zi, BigInteger value, String format)
+    public Fecha(ZoneId zi, BigInteger value)
+    {
+        this(type.point, value, new Timezone(zi), $default_format);
+    }
+
+    public Fecha(type t, long value, Timezone tz, String format)
+    {
+        this(t, new BigInteger(str(value)), tz, format);
+    }
+
+    /**
+     * Standard initializer.
+     */
+    public Fecha(type t, BigInteger value, Timezone tz, String format)
     {
         this.value_type = t;
-        this.zone = (value_type == type.point || value_type == type.now) ? new Timezone(zi) : null;
-        this.value = t == type.now ? null : value;
+        this.value = value;
+        this.zone = tz;
         this.format = format;
     }
 
@@ -214,6 +249,23 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         this.value = value;
     }
 
+    public type getValueType()
+    {
+        return value_type;
+    }
+
+    public void setValueType(type value_type)
+    {
+        this.value_type = value_type;
+    }
+
+
+    /**
+     * Express Fecha object in given format unit, and then give back number sequence using given unit.
+     *
+     * @param format The time unit you want to let Fecha to change format to
+     * @return Array of BigInteger corresponding to given time unit
+     */
     public BigInteger[] express(TimeUnit... format)
     {
         BigInteger remaining;
@@ -222,22 +274,22 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         TimeUnit[] structure;
         switch (this.value_type)
         {
-            case now :
+            case now:
                 partExpression = calendarSystem.expressFecha(BigInteger.valueOf(System.currentTimeMillis()), zone);
                 remaining = partExpression[0];
                 structure = calendarSystem.getSupportedTimeUnit();
                 break;
-            case period :
+            case period:
                 remaining = value;
                 partExpression = null;
                 structure = null;
                 break;
-            case point :
+            case point:
                 partExpression = calendarSystem.expressFecha(value, zone);
                 remaining = partExpression[0];
                 structure = calendarSystem.getSupportedTimeUnit();
                 break;
-            default :
+            default:
                 throw new IllegalStateException("Unexpected value: " + value_type);
         }
         for (int i = 0; i < format.length; i++)
@@ -261,7 +313,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
             else
             {
                 BigInteger[] divideAndRemainder = remaining
-                        .divideAndRemainder(((ConstantTimeUnit) format[i]).getLength());
+                    .divideAndRemainder(((ConstantTimeUnit) format[i]).getLength());
                 expression[i] = divideAndRemainder[0];
                 remaining = divideAndRemainder[1];
             }
@@ -288,7 +340,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
             {
                 difference[j] = i;
                 units[j] = (TimeUnit) bit;
-                j++;
+                j += 1;
             }
             else
             {
@@ -322,5 +374,4 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
     {
         century, year, month, day, hour, minute, second, timezone
     }
-
 }
