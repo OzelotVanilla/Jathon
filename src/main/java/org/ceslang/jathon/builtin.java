@@ -255,6 +255,34 @@ public final class builtin
         return cs.length();
     }
 
+    /**
+     * Notice: Boundary is contained
+     *
+     * @param s
+     * @param start
+     * @param end
+     * @return
+     */
+    public static String slice(String s, int start, int end)
+    {
+        // Change all negative number to positive, then pass to substring method
+        int len_bound = len(s);
+        start = start < 0 ? start + len_bound : start;
+        end = end < 0 ? end + len_bound : end;
+        if (start < end)
+        {
+            return s.substring(start, end + 1);
+        }
+        else if (start > end)
+        {
+            return reversed(s.substring(end, start + 1));
+        }
+        else
+        {
+            return "";
+        }
+    }
+
 
     // console.family: Make cmd command easier.
 
@@ -683,6 +711,20 @@ public final class builtin
         }
 
         return null;
+    }
+
+
+    public static String[] matchWithRegex(String origin, String regex)
+    {
+        ArrayList<String> ret = new ArrayList<>();
+
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile(regex).matcher(origin);
+        while (m.find())
+        {
+            ret.add(m.group());
+        }
+
+        return (String[]) ret.toArray(new String[0]);
     }
 
 
