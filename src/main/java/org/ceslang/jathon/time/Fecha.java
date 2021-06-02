@@ -1,15 +1,18 @@
 package org.ceslang.jathon.time;
 
-import static org.ceslang.jathon.builtin.*;
-
 import org.ceslang.jathon.time.calendar.CalendarSystem;
+import org.ceslang.jathon.time.calendar.VariableTimeUnit;
 
-import java.io.*;
-import java.math.*;
-import java.sql.Time;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.math.BigInteger;
 import java.time.*;
 import java.util.Date;
 import java.util.Formatter;
+
+import static org.ceslang.jathon.builtin.str;
 
 
 // import java.sql.Date;
@@ -35,15 +38,13 @@ import java.util.Formatter;
  */
 public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
 {
+    public static final String $default_format = "`default`";
     /**
      * <p>
      * First update of {@code Fecha}.
      * </p>
      */
     public final String $version = "0.2.6.0";
-
-    public static final String $default_format = "`default`";
-
     private type value_type;
 
     /**
@@ -56,7 +57,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      * {@code zone_info}を設定するには{@link #bindZone(ZoneOffset)}や{@link #bindZone(int)}を使ってください。
      * </p>
      */
-    private Timezone zone;
+    private final Timezone zone;
 
     /**
      * <p>
@@ -259,6 +260,41 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         this.value_type = value_type;
     }
 
+    /**
+     * @param period
+     * @return
+     */
+    public Fecha adjust(Fecha period)
+    {
+        if (period.value_type == type.period)
+        {
+            return new Fecha(value_type, value.add(period.value));
+        } else
+        {
+            throw new IllegalStateException("You can't offset with a Fecha who's type isn't period.");
+        }
+    }
+
+    public Fecha adjust(TimeUnit unit, BigInteger offset)
+    {
+        switch (value_type)
+        {
+            case period:
+                if (unit instanceof ConstantTimeUnit)
+                {
+                    return new Fecha(value_type, value.add(((ConstantTimeUnit) unit).getLength().multiply(value)));
+                } else
+                {
+                    throw new IllegalArgumentException("You can't offset a period with a VariableTimeUnit.");
+                }
+            case point:
+                return calendarSystem.adjust(this, (VariableTimeUnit) unit, value);
+            case now:
+                throw new IllegalStateException("You can't offset a Fecha who's type is now.");
+            default:
+                throw new IllegalStateException("Unexpected value: " + value_type);
+        }
+    }
 
     /**
      * Express Fecha object in given format unit, and then give back number sequence using given unit.
@@ -309,11 +345,9 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
             if (j != 0)
             {
                 expression[i] = partExpression[j + 1];
-            }
-            else
+            } else
             {
-                BigInteger[] divideAndRemainder = remaining
-                    .divideAndRemainder(((ConstantTimeUnit) format[i]).getLength());
+                BigInteger[] divideAndRemainder = remaining.divideAndRemainder(((ConstantTimeUnit) format[i]).getLength());
                 expression[i] = divideAndRemainder[0];
                 remaining = divideAndRemainder[1];
             }
@@ -341,8 +375,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
                 difference[j] = i;
                 units[j] = (TimeUnit) bit;
                 j += 1;
-            }
-            else
+            } else
             {
                 shifted[i] = bit;
             }

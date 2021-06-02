@@ -1,5 +1,6 @@
 package org.ceslang.jathon.time.calendar;
 
+import org.ceslang.jathon.time.Fecha;
 import org.ceslang.jathon.time.TimeUnit;
 import org.ceslang.jathon.time.Timezone;
 
@@ -14,6 +15,8 @@ public abstract class CalendarSystem
     public abstract TimeUnit[] getSupportedTimeUnit();
 
     public abstract BigInteger[] expressFecha(BigInteger timeStamp, Timezone timezone);
+
+    public abstract Fecha adjust(Fecha o, VariableTimeUnit unit, BigInteger offset);
 
     public static class TemplateCalenderSystem extends CalendarSystem
     {
@@ -36,6 +39,12 @@ public abstract class CalendarSystem
         {
             // TODO
             return new BigInteger[0];
+        }
+
+        @Override
+        public Fecha adjust(Fecha o, VariableTimeUnit unit, BigInteger offset)
+        {
+            return o;
         }
     }
 }
