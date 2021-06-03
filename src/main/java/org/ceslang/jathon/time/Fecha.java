@@ -1,6 +1,7 @@
 package org.ceslang.jathon.time;
 
 import org.ceslang.jathon.time.calendar.CalendarSystem;
+import org.ceslang.jathon.time.calendar.CalendarSystems;
 import org.ceslang.jathon.time.calendar.VariableTimeUnit;
 
 import java.io.*;
@@ -44,7 +45,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
 
     public static final String $default_point_format = "`MM`-`DD`-`YYYY` `hh24`:`mm`:`ss` `UTC_tz`";
 
-    private type value_type;
+    private final type value_type;
 
     /**
      * <p>
@@ -67,7 +68,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      * Save the value of time. It can mean point of time, or a period of time according to {@code type}.
      * </p>
      */
-    private BigInteger value;
+    private final BigInteger value;
 
     /**
      * <p>
@@ -80,7 +81,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      */
     private String format;
 
-    private CalendarSystem calendarSystem;
+    private CalendarSystem calendarSystem = CalendarSystems.GREGORIAN;
 
 
     public Fecha()
@@ -255,9 +256,9 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         this.setValue(new BigInteger(str(value)));
     }
 
-    public void setValue(BigInteger value)
+    public Fecha setValue(BigInteger value)
     {
-        this.value = value;
+        return new Fecha(value_type, value);
     }
 
     public type getValueType()
@@ -265,9 +266,9 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         return value_type;
     }
 
-    public void setValueType(type value_type)
+    public Fecha setValueType(type value_type)
     {
-        this.value_type = value_type;
+        return new Fecha(value_type, value);
     }
 
     /**
@@ -577,9 +578,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
 
     public static void main(String[] args)
     {
-        // Fecha fd = new Fecha(0);
-        // Fecha fd = new Fecha(568077063000L);
-        Fecha fd = new Fecha();
-        print(fd.toStringPointGetNumbers());
+        Fecha fd = new Fecha(System.currentTimeMillis());
+        System.out.println(Arrays.toString(CalendarSystems.GREGORIAN.expressFecha(fd.value, fd.zone)));
     }
 }
