@@ -53,11 +53,24 @@ public final class builtin
         }
     }
 
+    /**
+     * <p>Print a empty line to the console, and move cursor to the next line.</p>
+     *
+     * @see builtin#print(Object...)
+     * @since 1.8
+     */
     public static void print()
     {
         System.out.println();
     }
 
+    /**
+     * <p>Print each element and separate by comma, support array.</p>
+     *
+     * @param args The things you want to print. Separated by comma when printing.
+     * @see builtin#printx(Object...)
+     * @since 1.8
+     */
     public static void print(Object... args)
     {
         printx(args);

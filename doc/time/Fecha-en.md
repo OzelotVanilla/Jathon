@@ -70,10 +70,12 @@ Usage: Use either `long` or `BigInteger` as the value of Fecha, then use `Timezo
 ### \> (`long` value)
 
 Usage: Fast initialize Fecha as `point` typed with `long` given value.
+<br /><br />
 
 ### \> (`BigInteger` value)
 
 Usage: Same as using (`long` value).
+<br /><br />
 
 ### \> (`java.util.Date` d)
 
@@ -98,6 +100,19 @@ Equiv: [init(`java.sql.Date` d, `Timezone` tz)](#-javasqldate-d-timezone-tz)
 
 Usage: Parse a `java.sql.Date` object to Fecha, and specify the timezone for user.
 <br /><br />
+
+<br />
+
+Methods
+---------------------------------------
+
+### \> `template(value: int...) -> int`
+
+<!--Legacy signature here, like things below (this line should be removed) ->
+
+<!-- template(int...): int -->
+
+<!-- Put keywords for searching here -->
 
 <br />
 
