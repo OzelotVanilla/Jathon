@@ -232,7 +232,7 @@ public final class builtin
 
     public static int len(int i)
     {
-        return inted(StrictMath.log10(i));
+        return inted(StrictMath.log10(i)) + 1;
     }
 
     public static int len(int[] arr)
@@ -416,6 +416,11 @@ public final class builtin
         return (int) x;
     }
 
+    public static int inted(Number num)
+    {
+        return num.intValue();
+    }
+
     public static int[] inted(String[] arg)
     {
         int[] ret = new int[arg.length];
@@ -444,6 +449,11 @@ public final class builtin
     public static double doubled(String x)
     {
         return Double.parseDouble(x);
+    }
+
+    public static double doubled(Number num)
+    {
+        return num.doubleValue();
     }
 
     public static boolean booled(int x)

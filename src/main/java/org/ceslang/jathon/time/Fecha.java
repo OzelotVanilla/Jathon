@@ -466,8 +466,11 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         // you can count how many cycle are passed
         BigInteger year, day, hour, minute, second;
         BigInteger days = this.value.divide(new BigInteger("86400000"));
+        print("days: " + days);
         BigInteger cycle = this.value.divide(new BigInteger("126230400000"));
+        print("cycle: " + cycle);
         BigInteger remain = days.subtract(cycle.multiply(new BigInteger("1461")));
+        print("remain: " + remain);
 
         // Get year
         // Use minus method, when smaller than 0, stop
@@ -482,12 +485,12 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
                 index += 1;
             }
 
-            year = cycle.multiply(new BigInteger("4")).add(new BigInteger("1970"))
-                    .add(new BigInteger("" + (index - 1)));
+            year = cycle.multiply(new BigInteger("4")).add(new BigInteger("1970")).add(new BigInteger("" + index));
         }
 
         // Get month
         // Use minus method, when smaller than 0, stop
+        print("Remain: " + remain);
         byte month = 1;
         {
             BigInteger remain_temp = remain.add(BigInteger.ZERO);
@@ -538,11 +541,13 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
                     default :
                         throw new IllegalStateException("No such month");
                 }
+                print(remain_temp);
                 month += 1;
             }
+            day = remain_temp;
         }
 
-        return new int[]{year.intValue(), month, remain.intValue()};
+        return new int[]{year.intValue(), month, remain.intValue(), day.intValue()};
     }
 
     private String toStringPeriod(String[] parts)
@@ -572,7 +577,9 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
 
     public static void main(String[] args)
     {
-        Fecha fd = new Fecha(110412669000L);
+        // Fecha fd = new Fecha(0);
+        // Fecha fd = new Fecha(568077063000L);
+        Fecha fd = new Fecha();
         print(fd.toStringPointGetNumbers());
     }
 }
