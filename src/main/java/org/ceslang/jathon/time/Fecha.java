@@ -81,7 +81,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
      */
     private String format;
 
-    private CalendarSystem calendarSystem = CalendarSystems.GREGORIAN;
+    private CalendarSystem calendar_system = CalendarSystems.GREGORIAN;
 
 
     public Fecha()
@@ -248,7 +248,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
 
     public void bindCalendarSystem(CalendarSystem calendarSystem)
     {
-        this.calendarSystem = calendarSystem;
+        this.calendar_system = calendarSystem;
     }
 
     public void setValue(long value)
@@ -301,7 +301,7 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
                     throw new IllegalArgumentException("You can't offset a period with a VariableTimeUnit.");
                 }
             case point :
-                return calendarSystem.adjust(this, (VariableTimeUnit) unit, value);
+                return calendar_system.adjust(this, (VariableTimeUnit) unit, value);
             case now :
                 throw new IllegalStateException("You can't offset a Fecha who's type is now.");
             default :
@@ -324,9 +324,9 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
         switch (this.value_type)
         {
             case now :
-                partExpression = calendarSystem.expressFecha(BigInteger.valueOf(System.currentTimeMillis()), zone);
+                partExpression = calendar_system.expressFecha(BigInteger.valueOf(System.currentTimeMillis()), zone);
                 remaining = partExpression[0];
-                structure = calendarSystem.getSupportedTimeUnit();
+                structure = calendar_system.getSupportedTimeUnit();
                 break;
             case period :
                 remaining = value;
@@ -334,9 +334,9 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
                 structure = null;
                 break;
             case point :
-                partExpression = calendarSystem.expressFecha(value, zone);
+                partExpression = calendar_system.expressFecha(value, zone);
                 remaining = partExpression[0];
-                structure = calendarSystem.getSupportedTimeUnit();
+                structure = calendar_system.getSupportedTimeUnit();
                 break;
             default :
                 throw new IllegalStateException("Unexpected value: " + value_type);

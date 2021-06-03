@@ -50,6 +50,8 @@ Example:
 print();    // Give a blank line
 ```
 
+<br />
+
 ### \> `print(args: object...) -> none`
 
 <!--print(Object...): void -->
@@ -67,6 +69,8 @@ int[] l  =  new int[]{1, 2, 3};
 print(a, l);    // Give "5, [1, 2, 3]", go to next line
 ```
 
+<br />
+
 ### \> `printx(args: object...) -> none`
 
 <!--printx(Object...): void -->
@@ -78,9 +82,42 @@ After printing, stay in the same line.
 
 Example: See [Example in `print(args: object...)` function](#-printargs-object---none)
 
+<br />
+
 ### \> `printf(format: string，obj: object...) -> none`
 
 <!--printf(): void printf(void): void->
 
 <!-- Search Keyword: print format print with format -->
 
+Usage: As same as the `printf()` method in Java. Create new line after printing.
+Put the anchors in `format`, and put things you want to format in `obj`.
+
+Example:
+
+```java
+printf("%s, %d", "String", 100); // Give "String, 100" and move to next line
+```
+
+<br />
+
+### \> `printfx(format: string，obj: object...) -> none`
+
+<!--printfx(): void printf(void): void->
+
+<!-- Search Keyword: print format print with format no return -->
+
+Usage: As same as the `printf()` method in Java. After printing, stay in the same line.
+Put the anchors in `format`, and put things you want to format in `obj`.
+
+Example: See [Example in `printfx(format: string，obj: object...) -> none`
+function](#-printfformat-stringobj-object---none)
+
+<br />
+
+### \> `printc() -> none`
+
+
+<br /><br />
+
+### 2. 

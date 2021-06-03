@@ -54,7 +54,9 @@ public final class builtin
     }
 
     /**
-     * <p>Print a empty line to the console, and move cursor to the next line.</p>
+     * <p>
+     * Print a empty line to the console, and move cursor to the next line.
+     * </p>
      *
      * @see builtin#print(Object...)
      * @since 1.8
@@ -65,7 +67,9 @@ public final class builtin
     }
 
     /**
-     * <p>Print each element and separate by comma, support array.</p>
+     * <p>
+     * Print each element and separate by comma, support array.
+     * </p>
      *
      * @param args The things you want to print. Separated by comma when printing.
      * @see builtin#printx(Object...)
@@ -96,9 +100,19 @@ public final class builtin
     /**
      * Set back to default fg/bg colour, it might clear your previous set colour!
      */
-    public static void printc()
+    public static void printcx()
     {
         printx("\033[0;39;49m");
+    }
+
+    /**
+     * Set back to default fg/bg colour, and move to next line. <br />
+     * it might clear your previous set colour!
+     */
+    public static void printc()
+    {
+        printcx();
+        print();
     }
 
     /**

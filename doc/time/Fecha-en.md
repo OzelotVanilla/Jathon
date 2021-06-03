@@ -108,6 +108,59 @@ Methods
 
 ### \> `template(value: int...) -> int`
 
+### \> `writeExternal(out: ObjectOutput)`
+### \> `readExternal(in: ObjectInput)`
+Usage: implement from Externalizable, are used to serialize a fecha.
+
+You shouldn't invoke them manually.
+
+### \> `bindZone(zone_info: ZoneOffset)`
+### \> `bindZone(offset: int)`
+### \> `bindZone(tz: Timezone)`
+Usage:
+
+Bind a timezone, if you don't bind it, Fecha will bind the system default timezone.
+
+### \> `bindCalendarSystem(calendar_system: CalendarSystem)`
+Usage: Bind a CalenderSystem. You can find most used calender systems in the class CalenderSystems.
+
+You can't bind a CalenderSystem for a period Fecha.
+A point or now Fecha is binded to CalenderSystems.GREGORIAN.
+You can also bind other CalenderSystem.
+CalenderSystem which binded to a period or now Fecha decides the way to express a Fecha.
+For example, June 03, 2021 is meaningless for a Fecha if you don't bind a CalenderSystem.
+
+### \> `setValue(value: long) -> Fecha`
+
+<!-- setValue(long): Fecha -->
+
+<!-- set value -->
+
+Usage: Set the value of time of a Fecha instance. Returns itself while 
+
+### \> `setValue(value: BigInteger) -> Fecha`
+### \> `setValueType(value_type: type) -> Fecha`
+Usage:
+
+Create a new Fecha which accesses the new value and inherits old Fecha's other values.
+
+### \> `adjust(period: Fecha) -> Fecha`
+### \> `adjust(unit: TimeUnit, offset: BigInteger) -> Fecha`
+Usage: Adjust the Fecha in given offset.
+
+The first method requires a period Fecha as its input. It contains the length to adjust.
+
+The second methid requires a TimeUnit and a BigInteger as its input.
+It means offset times unit like three years.
+If you access a VariableTimeUnit as its input,
+you must think about it carefully to make sure it performs as what it should be.
+For example, if you add one Year to a Fecha which binded to GREGORIAN,
+and it was June 03, 2020, it should return June 03 2021.
+
+### \> `express(format: TimeUnit...) -> BigInteger[]`
+Usage: TBD, I'm going to sleep.
+
+
 <!--Legacy signature here, like things below (this line should be removed) ->
 
 <!-- template(int...): int -->
