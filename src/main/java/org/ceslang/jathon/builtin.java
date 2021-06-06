@@ -143,6 +143,13 @@ public final class builtin
      */
     public static void printcx(String option_str, Object... arg)
     {
+        // Check whether the option string is right or not
+        if (!option_str.matches("(0x)?[0-9a-fA-F]{6}[buif]{0,4}"))
+        {
+            print("Please see https://github.com/OzelotVanilla/Jathon/blob/master/doc/ and find help doc of builtin.");
+            throw new IllegalArgumentException("Wrong option string.");
+        }
+
         int hex_colour;
         StringBuilder option = new StringBuilder("\033[");
 
@@ -151,6 +158,11 @@ public final class builtin
         {
             hex_colour = inted(option_str.substring(0, 8));
             option_str = option_str.substring(8);
+        }
+        else if (option_str.startsWith("#"))
+        {
+            hex_colour = inted(slice(option_str, 1, 6));
+            option_str = slice(option_str, 8, -1);
         }
         else
         {
@@ -188,17 +200,17 @@ public final class builtin
         printc();
     }
 
-    public static void printc(String option_str, Object... arg)
+    public static void printc(String option_str, Object... args)
     {
-        printcx(option_str, arg);
+        printcx(option_str, args);
         print();
     }
 
 
-    public static void printc(int hex_r, int hex_g, int hex_b, Object... arg)
+    public static void printc(int hex_r, int hex_g, int hex_b, Object... args)
     {
         printSet(hex_r, hex_g, hex_b);
-        printx(arg);
+        printx(args);
         printc();
     }
 
@@ -285,10 +297,10 @@ public final class builtin
     /**
      * Notice: Boundary is contained
      *
-     * @param s
-     * @param start
-     * @param end
-     * @return
+     * @param s     String you want to take slice from
+     * @param start Starting index of slice, included.
+     * @param end   Ending index of slice, included.
+     * @return Sliced string
      */
     public static String slice(String s, int start, int end)
     {
@@ -306,7 +318,7 @@ public final class builtin
         }
         else
         {
-            return "";
+            return "" + s.charAt(start);
         }
     }
 
@@ -552,7 +564,7 @@ public final class builtin
     public static double inputOneDouble(String x)
     {
         printx(x);
-        return inputOneInt();
+        return inputOneDouble();
     }
 
     public static int[] sorted(int[] x)

@@ -38,7 +38,7 @@ Functions List
 
 ### \> `print() -> none` 
 
-<!--print(): void print(void): void->
+<!-- print(): void print(void): void->
 
 <!-- Search Keyword: no-arg print -->
 
@@ -54,7 +54,7 @@ print();    // Give a blank line
 
 ### \> `print(args: object...) -> none`
 
-<!--print(Object...): void -->
+<!-- print(Object...): void -->
 
 <!-- Search Keyword: print function -->
 
@@ -73,7 +73,7 @@ print(a, l);    // Give "5, [1, 2, 3]", go to next line
 
 ### \> `printx(args: object...) -> none`
 
-<!--printx(Object...): void -->
+<!-- printx(Object...): void -->
 
 <!-- Search Keyword: printx function print in same line -->
 
@@ -86,7 +86,7 @@ Example: See [Example in `print(args: object...)` function](#-printargs-object--
 
 ### \> `printf(format: string，obj: object...) -> none`
 
-<!--printf(): void printf(void): void->
+<!-- printf(): void printf(void): void->
 
 <!-- Search Keyword: print format print with format -->
 
@@ -103,7 +103,7 @@ printf("%s, %d", "String", 100); // Give "String, 100" and move to next line
 
 ### \> `printfx(format: string，obj: object...) -> none`
 
-<!--printfx(): void printf(void): void->
+<!-- printfx(): void printf(void): void->
 
 <!-- Search Keyword: print format print with format no return -->
 
@@ -117,7 +117,45 @@ function](#-printfformat-stringobj-object---none)
 
 ### \> `printc() -> none`
 
+<!-- printc(): void -->
+
+<!-- Colour printing -->
+
+Usage: Clear previous colour or format settings, and go to next line.
+
+Example:
+
+```javascript
+// Suppose you have global colour settings before this line
+printc();
+// After printc(), colour will be set back to default
+```
+
+See Also: [printc(option: string,
+args: object...)](#printcoption-string-args-object---none)
 
 <br /><br />
 
-### 2. 
+### \> `printc(option: string, args: object...) -> none`
+
+Usage: When you want to print one line with colour,
+and then go back to default colour settings.
+
+Arguments:
+
+> `option`: the option of colour settings.
+ 
+It is combination of colour code and style.
+
+First, the colour code, next, the style code.
+
+Regular expression: `(0x|#)?[0-9a-fA-F]{6}[buif]{0,4}`
+
+Acceptable form of colour code: `0xffffff`, `FFFFFF`, `#ffffff`
+
+
+Example:
+
+```javascript
+printc("0xf4b3c2")
+```
