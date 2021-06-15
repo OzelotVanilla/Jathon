@@ -115,6 +115,25 @@ function](#-printfformat-stringobj-object---none)
 
 <br />
 
+### \> `printcx() -> none`
+
+<!-- printcx(): void -->
+
+<!-- Colour printing clear colour settings -->
+
+Usage: Clear previous colour or format settings,
+and stay in the same line.
+
+Warning: **Do not** use it with [printSet](#-printsethex_colour-int---none)
+
+Example:
+
+```javascript
+// Suppose you have global colour settings before this line
+printcx();
+// After printcx(), colour will be set back to default
+```
+
 ### \> `printc() -> none`
 
 <!-- printc(): void -->
@@ -123,25 +142,25 @@ function](#-printfformat-stringobj-object---none)
 
 Usage: Clear previous colour or format settings, and go to next line.
 
-Example:
+Example: See example in [printcx() -> none](#-printcx---none).
 
-```javascript
-// Suppose you have global colour settings before this line
-printc();
-// After printc(), colour will be set back to default
-```
+
 
 See Also: [printc(option: string,
 args: object...)](#printcoption-string-args-object---none)
 
-<br /><br />
+<br />
 
-### \> `printc(option: string, args: object...) -> none`
+### \> `printcx(option: string, args: object...) -> none`
 
-Usage: When you want to print one line with colour,
+<!-- printc(String, Object...): void -->
+
+* Usage
+
+When you want to print one line with colour,
 and then go back to default colour settings.
 
-Arguments:
+* Arguments
 
 > `option`: the option of colour settings.
  
@@ -151,11 +170,74 @@ First, the colour code, next, the style code.
 
 Regular expression: `(0x|#)?[0-9a-fA-F]{6}[buif]{0,4}`
 
-Acceptable form of colour code: `0xffffff`, `FFFFFF`, `#ffffff`
+Acceptable form of **colour code**: `0xffffff`, `FFFFFF`, `#ffffff`
 
+Meaning of **style code**:
 
-Example:
+Please note that they may not work on your terminal.
+Different terminal support different style.
+
+| Symbol | Meaning   |
+| ------ | --------- |
+| `b`    | bold      |
+| `u`    | underline |
+| `i`    | italian   |
+| `f`    | flashing  |
+
+> `args`: the object you want to print
+
+As same as the argument of [printx(args: object...)](#-printxargs-object---none)
+for detail.
+
+* Example
 
 ```javascript
-printc("0xf4b3c2")
+// Print the string in colour #f4b3c2
+printcx("0xf4b3c2", "Hallo Welt.");
 ```
+
+<br />
+
+### \> `printc(format: string, args: object...) -> none`
+
+<!-- printc(): void -->
+
+<!-- Colour printing -->
+
+* Usage
+
+Print objects in given format, and go to next line
+and **set the colour to default colour**.
+See [printcx(option: string, args: object...)](#-printcxoption-string-args-object---none)
+for detail usage and examples.
+
+* Caution
+
+This function is not suggested to use with `printSet`.
+
+
+### \> `printSet(hex_colour: int) -> none`
+
+<!-- printSet(int): void -->
+
+<!-- global colour settings -->
+
+* Usage
+
+
+* Caution
+
+<br />
+
+### \> `printSet(r: int, g: int, b: int) -> none`
+
+* Usage
+
+Set the colour for comming printing function.
+Until you encounter some function that set back your colour after it works.
+
+* Caution
+
+Please **do not** use this function with the function start with **printc**.
+
+<br />

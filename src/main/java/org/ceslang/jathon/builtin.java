@@ -184,11 +184,20 @@ public final class builtin
             {
                 switch (c)
                 {
-                    case 'b' -> option.append("1;");
-                    case 'i' -> option.append("3;");
-                    case 'u' -> option.append("4;");
-                    case 'f' -> option.append("5;");
-                    default -> print("The argument you have inputted, '" + c + "' is wrong, or not supported");
+                    case 'b' :
+                        option.append("1;");
+                        break;
+                    case 'i' :
+                        option.append("3;");
+                        break;
+                    case 'u' :
+                        option.append("4;");
+                        break;
+                    case 'f' :
+                        option.append("5;");
+                        break;
+                    default :
+                        print("The argument you have inputted, '" + c + "' is wrong, or not supported");
                 }
             }
             printx(option.toString());
@@ -200,12 +209,18 @@ public final class builtin
         printc();
     }
 
+    public static void printcx(int hex_r, int hex_g, int hex_b, Object... args)
+    {
+        printSet(hex_r, hex_g, hex_b);
+        printx(args);
+        printcx();
+    }
+
     public static void printc(String option_str, Object... args)
     {
         printcx(option_str, args);
         print();
     }
-
 
     public static void printc(int hex_r, int hex_g, int hex_b, Object... args)
     {
@@ -243,10 +258,20 @@ public final class builtin
         {
             switch (o)
             {
-                case bold -> option.append("1;");
-                case italic -> option.append("3;");
-                case underlined -> option.append("4;");
-                case flashing -> option.append("5;");
+                case bold :
+                    option.append("1;");
+                    break;
+                case italic :
+                    option.append("3;");
+                    break;
+                case underlined :
+                    option.append("4;");
+                    break;
+                case flashing :
+                    option.append("5;");
+                    break;
+                default :
+                    throw new IllegalStateException("No such TextOpt.");
             }
         }
         option.deleteCharAt(option.length()).append("m");
@@ -297,9 +322,9 @@ public final class builtin
     /**
      * Notice: Boundary is contained
      *
-     * @param s     String you want to take slice from
-     * @param start Starting index of slice, included.
-     * @param end   Ending index of slice, included.
+     * @param s String you want to take slice from
+     * @param start Starting index of slice, included
+     * @param end Ending index of slice, included
      * @return Sliced string
      */
     public static String slice(String s, int start, int end)
@@ -330,7 +355,20 @@ public final class builtin
         // Idea from https://stackoverflow.com/questions/2979383/java-clear-the-console
         try
         {
-            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            // Check user's system
+            String os_name = System.getProperty("os.name").toLowerCase();
+            if (os_name.startsWith("win"))
+            {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+            else if (os_name.startsWith("linux"))
+            {
+                printx("\033c");
+            }
+            else
+            {
+                print("[!] Your system does not support clear screen.");
+            }
         }
         catch (Exception e)
         {
