@@ -1,5 +1,7 @@
 package org.ceslang.jathon;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,9 +12,11 @@ import java.util.*;
  * What is new? <br>
  * inted(String) can parse hex, bin, and oct (start with "0o", not "0") string now <br>
  * Now developing printc() function! Having colours in console! <br>
+ * Change max() and min() not only accept number but all comparable
  * readParam() function family <br>
  * booled() now support string <br>
- * Making open() family
+ * Making open() family <br>
+ * Add sum() and average()
  */
 
 @SuppressWarnings("unused")
@@ -184,19 +188,19 @@ public final class builtin
             {
                 switch (c)
                 {
-                    case 'b' :
+                    case 'b':
                         option.append("1;");
                         break;
-                    case 'i' :
+                    case 'i':
                         option.append("3;");
                         break;
-                    case 'u' :
+                    case 'u':
                         option.append("4;");
                         break;
-                    case 'f' :
+                    case 'f':
                         option.append("5;");
                         break;
-                    default :
+                    default:
                         print("The argument you have inputted, '" + c + "' is wrong, or not supported");
                 }
             }
@@ -258,19 +262,19 @@ public final class builtin
         {
             switch (o)
             {
-                case bold :
+                case bold:
                     option.append("1;");
                     break;
-                case italic :
+                case italic:
                     option.append("3;");
                     break;
-                case underlined :
+                case underlined:
                     option.append("4;");
                     break;
-                case flashing :
+                case flashing:
                     option.append("5;");
                     break;
-                default :
+                default:
                     throw new IllegalStateException("No such TextOpt.");
             }
         }
@@ -322,9 +326,9 @@ public final class builtin
     /**
      * Notice: Boundary is contained
      *
-     * @param s String you want to take slice from
+     * @param s     String you want to take slice from
      * @param start Starting index of slice, included
-     * @param end Ending index of slice, included
+     * @param end   Ending index of slice, included
      * @return Sliced string
      */
     public static String slice(String s, int start, int end)
@@ -347,6 +351,27 @@ public final class builtin
         }
     }
 
+    public static String slice(String s, int end)
+    {
+        return slice(s, 0, end);
+    }
+
+    /**
+     * The slice for array. "end" not included.
+     *
+     * @return A int[]
+     */
+    public static int[] slice(int[] src, int end)
+    {
+        return slice(src, 0, end);
+    }
+
+    public static int[] slice(int[] src, int start, int end)
+    {
+        int[] ret = new int[end - start];
+        if (end - start >= 0) System.arraycopy(src, start, ret, 0, end - start);
+        return ret;
+    }
 
     // console.family: Make cmd command easier.
 
@@ -692,18 +717,18 @@ public final class builtin
      * @return The max data from input
      */
     @SafeVarargs
-    public static <cmpable extends Number> cmpable max(cmpable... args)
+    public static <cmpable extends Comparable<cmpable>> cmpable max(cmpable... args)
     {
         cmpable r = args[0];
         for (cmpable x : args)
         {
-            r = (x.doubleValue() > r.doubleValue() ? x : r);
+            r = (x.compareTo(r) > 0 ? x : r);
         }
         return r;
     }
 
     @SafeVarargs
-    public static <cmpable extends Number> cmpable max(cmpable[]... args)
+    public static <cmpable extends Comparable<cmpable>> cmpable max(cmpable[]... args)
     {
         cmpable r = args[0][0];
         for (cmpable[] c : args)
@@ -739,6 +764,33 @@ public final class builtin
         return r;
     }
 
+    // TODO Not complete
+    public static int sum(int... args)
+    {
+        return Arrays.stream(args).sum();
+    }
+
+    public static long sum(long... args)
+    {
+        return Arrays.stream(args).sum();
+    }
+
+    public static double sum(double... args)
+    {
+        return Arrays.stream(args).sum();
+    }
+
+    @SafeVarargs
+    public static <addable extends Number> double sum(addable... args)
+    {
+        double result = args[0].doubleValue();
+        for (addable e : args)
+        {
+            result += e.doubleValue();
+        }
+        return result;
+    }
+
     public static double pow(double a, double b)
     {
         return StrictMath.pow(a, b);
@@ -771,6 +823,33 @@ public final class builtin
 
 
     // Start File Processing parts
+
+    /**
+     * @param file_path The file object you want to read
+     * @return Scanner of this file
+     */
+    public static Scanner open(File file_path)
+    {
+        try
+        {
+            return new Scanner(file_path);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param path The path using string
+     * @return Scanner of this file
+     */
+    public static Scanner open(String path)
+    {
+        return open(new File(path));
+    }
 
     public static Scanner openURL(String url)
     {
@@ -811,7 +890,7 @@ public final class builtin
             ret.add(m.group());
         }
 
-        return (String[]) ret.toArray(new String[0]);
+        return ret.toArray(new String[0]);
     }
 
 
