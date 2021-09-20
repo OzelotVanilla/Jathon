@@ -419,7 +419,9 @@ public class Fecha implements Externalizable, Cloneable, Comparable<Fecha>
             shifted[difference[i]] = expression[i];
         }
         formatter.format(format, shifted);
-        return formatter.toString();
+        String ret = formatter.toString();
+        formatter.close();
+        return ret;
     }
 
     private String toStringPoint(String[] parts)

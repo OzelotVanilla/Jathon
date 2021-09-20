@@ -14,15 +14,14 @@ import java.util.*;
  * What is new? <br>
  * inted(String) can parse hex, bin, and oct (start with "0o", not "0") string now <br>
  * Now developing printc() function! Having colours in console! <br>
- * Change max() and min() not only accept number but all comparable
+ * Change max() and min() not only accept number but all comparable<br>
  * readParam() function family <br>
  * booled() now support string <br>
- * Making open() family <br>
  * Add sum() and average() <br>
  * Add logarithm() to calculate logarithm with any base. Add lg() also. <br>
+ * Making open() family <br>
  */
 
-@SuppressWarnings("unused")
 public final class builtin
 {
     public final String $version = "0.3.1.0";
@@ -372,7 +371,7 @@ public final class builtin
     public static int[] slice(int[] src, int start, int end)
     {
         int[] ret = new int[end - start];
-        if (end - start >= 0) System.arraycopy(src, start, ret, 0, end - start);
+        if (end - start >= 0) { System.arraycopy(src, start, ret, 0, end - start); }
         return ret;
     }
 

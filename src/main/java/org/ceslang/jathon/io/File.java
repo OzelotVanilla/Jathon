@@ -1,10 +1,17 @@
 package org.ceslang.jathon.io;
 
+import static org.ceslang.jathon.builtin.*;
+
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
 import java.util.Scanner;
+
+import javax.management.RuntimeErrorException;
+
+import jdk.jshell.spi.ExecutionControl.RunException;
 
 
 /**
@@ -13,82 +20,231 @@ import java.util.Scanner;
 @SuppressWarnings("unused")
 public class File
 {
+    /**
+     * The path of bounded file.
+     */
     private java.io.File path;
-    private mode operation_mode;
+
+    /**
+     * Whether the file is closed. If it is closed, it can be no longer operable.
+     */
+    private boolean closed;
+
+    /**
+     * The open mode of file.
+     */
+    private mode open_mode;
 
     /**
      * The mode for file operation.
      */
     public enum mode
-    {readonly, writeonly, readwrite, append}
+    {
+        readonly, writeonly, readwrite
+    }
 
     // enum decode {text, binary}
 
     public File()
     {
-        // TODO Not complete
+        this((java.io.File) null);
     }
 
     public File(String path)
     {
-        // TODO Not complete
-        this.path = new java.io.File(path);
+        this(new java.io.File(path), mode.readonly);
     }
 
     public File(java.io.File path)
     {
-        // TODO Not complete
+        this(path, mode.readonly);
+    }
+
+    public File(String path, mode open_mode)
+    {
+        this(new java.io.File(path), open_mode);
+    }
+
+    public File(java.io.File path, mode open_mode)
+    {
+        this.closed = false;
         this.path = path;
+        this.open_mode = open_mode;
     }
 
 
     /**
-     * Open a file by providing String path. <br>
-     * It can be only used when a File instance does not have pointed to any file.
+     * Open a file by providing {@code String} path. <br>
+     * It can be only used when a {@code File} instance does not have pointed to any file.
      */
     public File open(String path)
     {
-        // TODO Not complete
-        return null;
+        return this.open(new java.io.File(path));
     }
 
     /**
-     * Open a file by providing path in java.io.File form. <br>
-     * It can be only used when a File instance does not have pointed to any file.
+     * Open a file by providing path in {@code java.io.File} form. <br>
+     * It can be only used when a {@code File} instance does not have pointed to any file.
      */
     public File open(java.io.File path)
     {
         // TODO Not complete
-        return null;
+        if (this.closed)
+        {
+            printc("0xe9546b", "File is already closed. Raising this error...");
+            throw new RuntimeException("Cannot open file after closed.");
+        }
+        else if (this.path == null)
+        {
+            this.path = path;
+            return this;
+        }
+        else
+        {
+            throw new RuntimeException("Already bounded to a file.");
+        }
     }
 
     /**
-     * Close a file object, make it not operable.
+     * Close a file object, make it no longer able to beu use.<br>
+     * If you want to access to a closed file, an exception will raise.
      */
     public void close()
     {
-        // TODO Not complete
+        this.closed = true;
+        this.path = null;
+        this.open_mode = null;
     }
 
 
     /**
+     * Check operability of {@code File} instance.<br>
+     * If a file is closed, not bounded to other file, or not created yet, it is not operable.
+     *
      * @return Whether the file object is still operable
      */
     public boolean isOperable()
     {
         // TODO Not complete
-        return path.exists();
+        return !this.closed && this.path != null && this.path.exists() && this.open_mode != null;
     }
 
+    private void check()
+    {
+        // TODO Not complete
+        if (!this.isOperable()) { throw new RuntimeException("File is not operable."); }
+    }
+
+    /**
+     * Copy existed file to another place.<br>
+     * Here is an example:
+     *
+     * <pre>
+     * File copied_file = new File("./file.txt").copyTo("../new path/");
+     * </pre>
+     *
+     * @param target_path The target path of copying
+     * @return Newly copied {@code File} instance
+     */
     public File copyTo(String target_path)
     {
-        // TODO Not complete
-        return null;
+        return this.copyTo(new java.io.File(target_path), target_path.endsWith("/") || target_path.endsWith("\\"));
     }
 
+    /**
+     * <b>Caution</b>: If you are coping files to a uncreated directory, DO NOT use it. <br>
+     * use {@link File#copyTo(String)} instead.
+     *
+     * @param target_path The target path of copying
+     * @return Newly copied {@code File} instance
+     */
+    public File copyTo(java.io.File target_path)
+    {
+        return this.copyTo(target_path, target_path.isDirectory());
+    }
+
+    private File copyTo(java.io.File target_path, boolean is_dir)
+    {
+        // TODO Relative path problem - Java is from project's root
+        try
+        {
+            if (!target_path.exists())
+            {
+                boolean $ = is_dir ? target_path.mkdirs() : target_path.createNewFile();
+            }
+
+            Files.copy(this.path.toPath(), Paths.get(target_path + "/" + (is_dir ? this.path.getName() : "")),
+                       StandardCopyOption.REPLACE_EXISTING);
+
+            this.path = target_path;
+
+            if (!this.path.exists())
+            {
+                throw new RuntimeException("Copied but copied file is missing.");
+            }
+
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("System does not complete copying job.", e);
+        }
+
+        return this;
+    }
+
+    /**
+     * Move existed file to another place.<br>
+     * Here is an example:
+     *
+     * <pre>
+     * File moved_file = new File("./file.txt").moveTo("../new path/");
+     * </pre>
+     *
+     * @param target_path The target path of moving
+     * @return Newly moved {@code File} instance
+     */
     public File moveTo(String target_path)
     {
-        // TODO Not complete
+        return this.moveTo(new java.io.File(target_path), target_path.endsWith("/") || target_path.endsWith("\\"));
+    }
+
+    /**
+     * <b>Caution</b>: If you are moving files to a uncreated directory, DO NOT use it. <br>
+     * use {@link File#moveTo(String)} instead.
+     *
+     * @param target_path The target path of moving
+     * @return Newly moved {@code File} instance
+     */
+    public File moveTo(java.io.File target_path)
+    {
+        return this.copyTo(target_path, target_path.isDirectory());
+    }
+
+    private File moveTo(java.io.File target_path, boolean is_dir)
+    {
+        try
+        {
+            if (!target_path.exists())
+            {
+                boolean $ = is_dir ? target_path.mkdirs() : target_path.createNewFile();
+            }
+
+            Files.move(this.path.toPath(), Paths.get(target_path + "/" + (is_dir ? this.path.getName() : "")),
+                       StandardCopyOption.REPLACE_EXISTING);
+
+            this.path = target_path;
+
+            if (!this.path.exists())
+            {
+                throw new RuntimeException("Moved but moved file is missing.");
+            }
+
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("System does not complete moving job.", e);
+        }
+
         return this;
     }
 
@@ -130,17 +286,17 @@ public class File
 
     public boolean isReadable()
     {
-        return Files.isReadable(this.path.toPath());
+        return Files.isReadable(this.path.toPath()) && this.open_mode != mode.writeonly;
     }
 
     public boolean isWriteable()
     {
-        return Files.isWritable(this.path.toPath());
+        return Files.isWritable(this.path.toPath()) && this.open_mode != mode.readonly;
     }
 
     public boolean isReadwriteable()
     {
-        return Files.isReadable(this.path.toPath()) && Files.isWritable(this.path.toPath());
+        return this.isReadable() && this.isWriteable();
     }
 
     public boolean isExecutable()
@@ -148,7 +304,7 @@ public class File
         return Files.isExecutable(this.path.toPath());
     }
 
-    public String fileAddress()
+    public String fileAbsolutePath()
     {
         try
         {
@@ -160,6 +316,34 @@ public class File
         }
 
         return null;
+    }
+
+    public String fileAbsolutePath(String separator)
+    {
+        // TODO Not complete
+        try
+        {
+            return this.path.getCanonicalPath()
+                .replaceAll(System.getProperty("file.separator").replaceAll("\\\\", "\\\\\\\\"), separator);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String fileRelativePath()
+    {
+        return this.path.toString();
+    }
+
+    public String fileRelativePath(String separator)
+    {
+        // TODO Not complete
+        return this.fileRelativePath().replaceAll(System.getProperty("file.separator").replaceAll("\\\\", "\\\\\\\\"),
+                                                  separator);
     }
 
     public long fileSize()
@@ -174,11 +358,6 @@ public class File
         }
 
         return -1;
-    }
-
-    public String filePathStr()
-    {
-        return this.path.toString();
     }
 
     public java.io.File getJavaFileObj()
