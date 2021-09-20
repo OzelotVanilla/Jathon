@@ -1,8 +1,10 @@
 package org.ceslang.jathon;
 
-import java.io.File;
+import org.ceslang.jathon.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.*;
@@ -16,7 +18,8 @@ import java.util.*;
  * readParam() function family <br>
  * booled() now support string <br>
  * Making open() family <br>
- * Add sum() and average()
+ * Add sum() and average() <br>
+ * Add logarithm() to calculate logarithm with any base. Add lg() also. <br>
  */
 
 @SuppressWarnings("unused")
@@ -347,7 +350,7 @@ public final class builtin
         }
         else
         {
-            return "" + s.charAt(start);
+            return String.valueOf(s.charAt(start));
         }
     }
 
@@ -801,6 +804,16 @@ public final class builtin
         return StrictMath.sqrt(a);
     }
 
+    public static double logarithm(double base, double x)
+    {
+        return lg(x) / lg(base);
+    }
+
+    public static double lg(double x)
+    {
+        return Math.log10(x);
+    }
+
     public static double ln(double x)
     {
         return Math.log(x);
@@ -824,11 +837,29 @@ public final class builtin
 
     // Start File Processing parts
 
+    public static File open(String path)
+    {
+        // TODO Not complete
+        return null;
+    }
+
+    public static File open(InputStream is)
+    {
+        // TODO Not complete
+        return null;
+    }
+
+    public static File openURL(String url)
+    {
+        // TODO Not complete
+        return null;
+    }
+
     /**
      * @param file_path The file object you want to read
      * @return Scanner of this file
      */
-    public static Scanner open(File file_path)
+    public static Scanner openScanner(java.io.File file_path)
     {
         try
         {
@@ -846,12 +877,12 @@ public final class builtin
      * @param path The path using string
      * @return Scanner of this file
      */
-    public static Scanner open(String path)
+    public static Scanner openScanner(String path)
     {
-        return open(new File(path));
+        return openScanner(new java.io.File(path));
     }
 
-    public static Scanner openURL(String url)
+    public static Scanner openURLScanner(String url)
     {
         try
         {
