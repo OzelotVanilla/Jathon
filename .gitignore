@@ -1,5 +1,5 @@
 # Git Ignore
-#
+.gitignore
 
 # Ozelot Vanilla's ignore
 /.vscode/
@@ -9,6 +9,7 @@
 pom.xml
 .classpath
 .project
+bin/
 # Ozelot Vanilla's ignore end
 
 # magicalStone's ignore

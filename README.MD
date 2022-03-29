@@ -83,7 +83,7 @@ Jathon Suggest You
 * Var: start with lower case, connect with underscore, and no upper case.
 * Function or method: lower case start, upper case to connect.
 * Class: start with upper case and try to be short.
-* Consonant: start with dollar sign, then do as `var`.
+* Constant: start with dollar sign, then do as `var`.
 * System reserved consonant: do as upper cased `consonant`.
 
 For example (in Java):
@@ -107,7 +107,7 @@ What is other files in this folder
 ----------------------------------
 
 Version Guide:
-You can see the discription of the difference versions.
+You can see the description of the difference versions.
 
 updater:
 Save it in the folder which contains these three modules, and fetch the latest version **in repo** (**not

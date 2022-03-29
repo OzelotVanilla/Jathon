@@ -6,12 +6,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
-
-import javax.management.RuntimeErrorException;
-
-import jdk.jshell.spi.ExecutionControl.RunException;
 
 
 /**
@@ -73,6 +71,19 @@ public class File
     }
 
 
+    // helper method
+
+    /**
+     * @param input_path The input path of user
+     * @return The java {@code File} instance for current java file
+     */
+    private static File convToJFileStandard(String input_path)
+    {
+        // TODO Convert relative path to absolute path
+        return null;
+    }
+
+
     /**
      * Open a file by providing {@code String} path. <br>
      * It can be only used when a {@code File} instance does not have pointed to any file.
@@ -129,10 +140,17 @@ public class File
         return !this.closed && this.path != null && this.path.exists() && this.open_mode != null;
     }
 
-    private void check()
+    private void check(boolean... require)
     {
         // TODO Not complete
-        if (!this.isOperable()) { throw new RuntimeException("File is not operable."); }
+        for (boolean req : require)
+        {
+            if (!req) { return; }
+        }
+        if (!this.isOperable())
+        {
+            throw new RuntimeException("File is not operable.");
+        }
     }
 
     /**
@@ -165,7 +183,7 @@ public class File
 
     private File copyTo(java.io.File target_path, boolean is_dir)
     {
-        // TODO Relative path problem - Java is from project's root
+        // TODO Relative path problem - Java is from project's root. Use $ for project root
         try
         {
             if (!target_path.exists())
@@ -286,26 +304,37 @@ public class File
 
     public boolean isReadable()
     {
+        check();
         return Files.isReadable(this.path.toPath()) && this.open_mode != mode.writeonly;
+    }
+
+    public static boolean isReadableFile(File file)
+    {
+        file.check();
+        return file.isReadable();
     }
 
     public boolean isWriteable()
     {
+        check();
         return Files.isWritable(this.path.toPath()) && this.open_mode != mode.readonly;
     }
 
     public boolean isReadwriteable()
     {
+        check();
         return this.isReadable() && this.isWriteable();
     }
 
     public boolean isExecutable()
     {
+        check();
         return Files.isExecutable(this.path.toPath());
     }
 
     public String fileAbsolutePath()
     {
+        check();
         try
         {
             return this.path.getCanonicalPath();
@@ -320,6 +349,7 @@ public class File
 
     public String fileAbsolutePath(String separator)
     {
+        check();
         // TODO Not complete
         try
         {
@@ -336,18 +366,21 @@ public class File
 
     public String fileRelativePath()
     {
+        check();
         return this.path.toString();
     }
 
     public String fileRelativePath(String separator)
     {
         // TODO Not complete
+        check();
         return this.fileRelativePath().replaceAll(System.getProperty("file.separator").replaceAll("\\\\", "\\\\\\\\"),
                                                   separator);
     }
 
     public long fileSize()
     {
+        check();
         try
         {
             return Files.size(this.path.toPath());
@@ -362,6 +395,7 @@ public class File
 
     public java.io.File getJavaFileObj()
     {
+        check();
         return this.path;
     }
 
@@ -370,24 +404,28 @@ public class File
     public File seek(long to)
     {
         // TODO Not complete
+        check();
         return null;
     }
 
     public File seek(long offset, long from)
     {
         // TODO Not complete
+        check();
         return null;
     }
 
     public String read()
     {
         // TODO Not complete
+        check(this.isReadable());
         return null;
     }
 
     public String[] readAllLines()
     {
         // TODO Not complete
+        check();
         try
         {
             return Files.readAllLines(this.path.toPath()).toArray(new String[]{});
@@ -403,18 +441,21 @@ public class File
     public File write(String content)
     {
         // TODO Not complete
+        check();
         return this;
     }
 
     public File append(String content)
     {
         // TODO Not complete
+        check();
         return this;
     }
 
     public Iterator<String> iterLines()
     {
         // TODO Not complete
+        check();
         try
         {
             Scanner s = new Scanner(this.path.toPath());
@@ -445,6 +486,7 @@ public class File
     public String toString()
     {
         // TODO Not complete
+        check();
         final StringBuilder ret = new StringBuilder("Jathon File Object\n");
         ret.append("Name: ").append(this.path.getName()).append("\n");
         ret.append("Path: ").append(this.path.getPath());

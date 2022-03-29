@@ -1,6 +1,28 @@
 Version Guide
 =============
 
+Ver 0.3.2.0 03/27/2022
+----------------------
+
+### What is new for `builtin`?
+
+ * inted(String) can parse hex, bin, and oct (start with "0o", not "0") string now <br>
+ * Now developing printc() function! Having colours in console! <br>
+ * Change max() and min() not only accept number but all comparable<br>
+ * readParam() function family <br>
+ * booled() now support string <br>
+ * Add native method getConsoleWidth() family (implemented by ANSI, may fail in IDE)<br>
+ * Add sum() and average() <br>
+ * Add logarithm() to calculate logarithm with any base. Add lg() also. <br>
+ * Add queContains () to check whether a collection has a specific value.<br>
+ * Making open() family <br>
+
+### Important changes
+
+* Now `builtin` have native method, it will extract dll file to your Java installation dir's `bin` folder,
+  and it will name it as `org_ceslang_jathon_builtin.dll` <br>
+
+
 Ver 0.2.6.0 05/04/2021
 ----------------------
 

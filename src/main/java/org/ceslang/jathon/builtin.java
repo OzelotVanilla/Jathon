@@ -1,6 +1,8 @@
 package org.ceslang.jathon;
 
+import org.ceslang.jathon.funcutil.CompareChain;
 import org.ceslang.jathon.io.File;
+import org.ceslang.jathon.jni.JNISupporter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,33 +14,45 @@ import java.util.*;
 
 /**
  * What is new? <br>
- * inted(String) can parse hex, bin, and oct (start with "0o", not "0") string now <br>
+ * inted(String) can parse hex, bin, and oct (start with "0o", not "0") string
+ * now <br>
  * Now developing printc() function! Having colours in console! <br>
  * Change max() and min() not only accept number but all comparable<br>
  * readParam() function family <br>
  * booled() now support string <br>
+ * Add native method getConsoleWidth() family (implemented by ANSI, may fail in
+ * IDE)<br>
  * Add sum() and average() <br>
  * Add logarithm() to calculate logarithm with any base. Add lg() also. <br>
+ * Add queContains () to check whether a collection has a specific value.<br>
  * Making open() family <br>
  */
 
+@SuppressWarnings("unchecked")
 public final class builtin
 {
-    public final String $version = "0.3.1.0";
+    public static final String $version = "0.3.2.0";
+    public static final String $jni_in_jar_lib_path = "builtin.dll";
 
     /**
-     * This is the builtin file in Jathon. Do not try to initialize instance of this class.<br>
+     * This is the builtin file in Jathon. Do not try to initialize instance of this
+     * class.<br>
      * You can use this freely.
      */
     private builtin()
     {
     }
 
+    static
+    {
+        System.loadLibrary(JNISupporter.prepare($jni_in_jar_lib_path));
+    }
 
     // print() function family: Shorter name, print what you want.
 
     /**
-     * An easy function for print data. Shorter than "System.out.println", easier to use (use comma to separate
+     * An easy function for print data. Shorter than "System.out.println", easier to
+     * use (use comma to separate
      * variables, do not worry about data type).
      */
     public static void printx(Object... args)
@@ -284,11 +298,12 @@ public final class builtin
         printx(option.toString());
     }
 
-
-    // len() function: If you only want to get length, then we will give you its length
+    // len() function: If you only want to get length, then we will give you its
+    // length
 
     /**
-     * Return the length of the object you have inputted. Currently return string's length.
+     * Return the length of the object you have inputted. Currently, return string's
+     * length.
      * <p>
      * Note: because string is commonly used, it appears in the first
      *
@@ -310,12 +325,12 @@ public final class builtin
         return arr.length;
     }
 
-    public static <U> int len(U[] a)
+    public static <JObjectType> int len(JObjectType[] a)
     {
         return a.length;
     }
 
-    public static <U> int len(Collection<U> c)
+    public static <JObjectType> int len(Collection<JObjectType> c)
     {
         return c.size();
     }
@@ -361,7 +376,7 @@ public final class builtin
     /**
      * The slice for array. "end" not included.
      *
-     * @return A int[]
+     * @return A sliced int array
      */
     public static int[] slice(int[] src, int end)
     {
@@ -371,111 +386,62 @@ public final class builtin
     public static int[] slice(int[] src, int start, int end)
     {
         int[] ret = new int[end - start];
-        if (end - start >= 0) { System.arraycopy(src, start, ret, 0, end - start); }
+        if (end - start >= 0)
+        {
+            System.arraycopy(src, start, ret, 0, end - start);
+        }
         return ret;
     }
 
-    // console.family: Make cmd command easier.
-
-    public static void cls()
+    public static <JObjectType> Object[] slice(JObjectType[] src, int end)
     {
-        // Idea from https://stackoverflow.com/questions/2979383/java-clear-the-console
-        try
+        return slice(src, 0, end);
+    }
+
+    public static <JObjectType> Object[] slice(JObjectType[] src, int start, int end)
+    {
+        int len_bound = len(src);
+        start = start < 0 ? start + len_bound : start;
+        end = end < 0 ? end + len_bound : end;
+
+        JObjectType[] result = (JObjectType[]) new Object[abs(end - start)];
+
+        if (start < end)
         {
-            // Check user's system
-            String os_name = System.getProperty("os.name").toLowerCase();
-            if (os_name.startsWith("win"))
+            int index = 0;
+            for (int i = start; i < end; i++)
             {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            }
-            else if (os_name.startsWith("linux"))
-            {
-                printx("\033c");
-            }
-            else
-            {
-                print("[!] Your system does not support clear screen.");
+                result[index++] = src[i];
             }
         }
-        catch (Exception e)
+        else if (start > end) // reversed
         {
-            print("Failed to clean the screen.");
-        }
-    }
-
-    public static void exit()
-    {
-        System.exit(0);
-    }
-
-    public static void exit(int status)
-    {
-        System.exit(status);
-    }
-
-    public static String[] readOptionParam(String[] args)
-    {
-        ArrayList<String> ret_args = new ArrayList<>();
-        for (String s : args)
-        {
-            // If it is "-o" or "--option"
-            if (s.startsWith("-"))
+            int index = 0;
+            for (int i = end - 1; i > start; i--)
             {
-                ret_args.add(s);
+                result[index++] = src[i];
             }
         }
-        return ret_args.toArray(new String[0]);
+        else
+        {
+            result[0] = src[start];
+        }
+
+        return result;
     }
 
-    public static String[] readObjectParams(String[] args)
+    public static <EleType> boolean queContains(EleType[] arr, EleType contains)
     {
-
-        ArrayList<String> ret_args = new ArrayList<>();
-        for (String s : args)
+        for (EleType element : arr)
         {
-            if (!s.startsWith("-"))
+            if (element.equals(contains))
             {
-                ret_args.add(s);
+                return true;
             }
         }
-        return ret_args.toArray(new String[0]);
+
+        return false;
     }
-
-    // TODO Alternative for Option Param (like "-h", "-?", and "--help" is the same)
-    // public static String[] readObjectParam(String[] args, int number_to_read, String... after)
-    // {
-
-    // }
-
-    // TODO Strict ream param: only the obj param next to option param is accepted
-    // Like this: --strict-mode I_can_be_read --separate I_cannot_be_read
-
-    public static String[] readObjectParam(String[] args, String after, int number_to_read)
-    {
-        ArrayList<String> ret_args = new ArrayList<>();
-        {
-            boolean can_read = false;
-            for (int i = 0; i < args.length && number_to_read > 0; i++)
-            {
-                // Get can_read status
-                // If after is null, then read from the first one
-                if (args[i].equals(after) || after == null)
-                {
-                    can_read = true;
-                    continue;
-                }
-
-                // If can read
-                if (can_read)
-                {
-                    ret_args.add(args[i]);
-                    number_to_read -= 1;
-                }
-            }
-        }
-        return ret_args.toArray(new String[0]);
-    }
-
 
     public static String deciFmt(double d)
     {
@@ -488,7 +454,6 @@ public final class builtin
         x = x.setScale(scale, RoundingMode.HALF_DOWN);
         return x.toString();
     }
-
 
     public static int inted(String x)
     {
@@ -572,11 +537,11 @@ public final class builtin
 
     public static boolean booled(String x)
     {
-        if (x.equalsIgnoreCase("true"))
+        if (x.strip().equalsIgnoreCase("true"))
         {
             return true;
         }
-        if (x.equalsIgnoreCase("false"))
+        if (x.strip().equalsIgnoreCase("false"))
         {
             return false;
         }
@@ -595,7 +560,6 @@ public final class builtin
     {
         return bool ? "true" : "false";
     }
-
 
     private static final Scanner scanner_s = new Scanner(System.in);
 
@@ -672,7 +636,6 @@ public final class builtin
         return (E) ret;
     }
 
-
     // Math function.
 
     private static final Random random = new Random();
@@ -698,7 +661,6 @@ public final class builtin
     {
         return random.nextInt(e - s + 1) + s;
     }
-
 
     public static int abs(int x)
     {
@@ -833,6 +795,10 @@ public final class builtin
         return "0o" + Integer.toOctalString(x);
     }
 
+    public static <ParaType extends Comparable<ParaType>> CompareChain<ParaType> compare(ParaType a, ParaType b)
+    {
+        return new CompareChain<>(a, b);
+    }
 
     // Start File Processing parts
 
@@ -909,7 +875,6 @@ public final class builtin
         return null;
     }
 
-
     public static String[] matchWithRegex(String origin, String regex)
     {
         ArrayList<String> ret = new ArrayList<>();
@@ -923,9 +888,117 @@ public final class builtin
         return ret.toArray(new String[0]);
     }
 
-
     // End File Processing parts
 
+    // Start of console related parts
+
+    public static native int getConsoleWidth();
+
+    public static native int getConsoleHeight();
+
+    public static native int[] getConsoleWidthAndHeight();
+
+    public static void cls()
+    {
+        // Idea from https://stackoverflow.com/questions/2979383/java-clear-the-console
+        try
+        {
+            // Check user's system
+            String os_name = System.getProperty("os.name").toLowerCase();
+            if (os_name.startsWith("win"))
+            {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+            else if (os_name.startsWith("linux"))
+            {
+                printx("\033c");
+            }
+            else
+            {
+                print("[!] Your system does not support clear screen.");
+            }
+        }
+        catch (Exception e)
+        {
+            print("Failed to clean the screen.");
+        }
+    }
+
+    public static void exit()
+    {
+        System.exit(0);
+    }
+
+    public static void exit(int status)
+    {
+        System.exit(status);
+    }
+
+    public static String[] readOptionParam(String[] args)
+    {
+        ArrayList<String> ret_args = new ArrayList<>();
+        for (String s : args)
+        {
+            // If it is "-o" or "--option"
+            if (s.startsWith("-"))
+            {
+                ret_args.add(s);
+            }
+        }
+        return ret_args.toArray(new String[0]);
+    }
+
+    public static String[] readObjectParams(String[] args)
+    {
+
+        ArrayList<String> ret_args = new ArrayList<>();
+        for (String s : args)
+        {
+            if (!s.startsWith("-"))
+            {
+                ret_args.add(s);
+            }
+        }
+        return ret_args.toArray(new String[0]);
+    }
+
+    // TODO Alternative for Option Param (like "-h", "-?", and "--help" is the same)
+    // public static String[] readObjectParam(String[] args, int number_to_read,
+    // String... after)
+    // {
+
+    // }
+
+    // TODO Strict real param: only the obj param next to option param is accepted
+    // Like this: --strict-mode I_can_be_read --separate I_cannot_be_read
+
+    public static String[] readObjectParam(String[] args, String after, int number_to_read)
+    {
+        ArrayList<String> ret_args = new ArrayList<>();
+        {
+            boolean can_read = false;
+            for (int i = 0; i < args.length && number_to_read > 0; i++)
+            {
+                // Get can_read status
+                // If after is null, then read from the first one
+                if (args[i].equals(after) || after == null)
+                {
+                    can_read = true;
+                    continue;
+                }
+
+                // If it can be read
+                if (can_read)
+                {
+                    ret_args.add(args[i]);
+                    number_to_read -= 1;
+                }
+            }
+        }
+        return ret_args.toArray(new String[0]);
+    }
+
+    // End of console related parts
 
     // // Start Error Processing parts
 
