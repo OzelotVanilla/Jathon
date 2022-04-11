@@ -29,8 +29,8 @@ Please go to `/src/main/java/org/ceslang/jathon/` to find file.
 ### builtin (`jathon`)
 
 ![](https://img.shields.io/badge/status-able_to_be_used-fcc800?logoColor=4c6473)
-![](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/bug:%20builtin?color=f09199&label=bug)
-![](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/warning:%20builtin?color=F08300&label=warn)
+![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/bug:%20builtin?color=f09199&label=bug)
+![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/warning:%20builtin?color=F08300&label=warn)
 ![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/todo:%20builtin?color=38a1db&label=todo)
 ![](https://img.shields.io/github/size/OzelotVanilla/Jathon/src/main/java/org/ceslang/jathon/builtin.java?color=CEE4AE&logoColor=4c6473)
 
@@ -49,8 +49,8 @@ this class's name is "`builtin`", but not "*BuiltIn*" or "*Builtin*".
 ### Fecha (`jathon.time`)
 
 ![](https://img.shields.io/badge/status-under_development-eebbcb?logoColor=4c6473)
-![](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/bug:%20Fecha?color=f09199&label=bug)
-![](https://img.shields.io/github/issues-raw/OzelotVanilla/aTool/warning:%20Fecha?color=F08300&label=warn)
+![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/bug:%20Fecha?color=f09199&label=bug)
+![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/warning:%20Fecha?color=F08300&label=warn)
 ![](https://img.shields.io/github/issues-raw/OzelotVanilla/Jathon/todo:%20Fecha?color=38a1db&label=todo)
 ![](https://img.shields.io/github/size/OzelotVanilla/Jathon/src/main/java/org/ceslang/jathon/time/Fecha.java?color=CEE4AE&logoColor=4c6473)
 
